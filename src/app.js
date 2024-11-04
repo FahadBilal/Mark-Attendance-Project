@@ -18,6 +18,15 @@ app.use(cors({
 }));
 
 
+// Import userRoute
+
+import userRoute from './routes/user.routes.js'
+
+app.use("/apiv1/users",userRoute)
+
+
+
+
 
 
 
