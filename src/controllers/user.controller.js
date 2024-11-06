@@ -4,6 +4,8 @@ import { ApiError } from "../utils/ApiError.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
+import { Attendance } from "../models/attendance.model.js";
+
 const generateAccessAndRefreshToken = async (userId) => {
   const user = await User.findOne(userId);
 
@@ -206,4 +208,86 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken };
+const changeCurrentPassword = asyncHandler(async (req, res) => {
+  const { OldPassword, newPassword } = req.body;
+
+  const user = await User.findById(rq.user._id);
+
+  const isPasswordValid = await user.isPasswordCorrect(OldPassword);
+
+  if (!isPasswordValid) {
+    throw new ApiError(409, "Invalid old Password");
+  }
+
+  user.password = newPassword;
+  await user.save({ validateBeforeSave: false });
+
+  res.status(200).json(ApiResponse(200, {}, "Password changed successfully"));
+});
+
+const updateProfileImage = asyncHandler(async (req, res) => {
+  const profileImageLocalPath = req.file?.path;
+
+  if (!profileImageLocalPath) {
+    throw new ApiError(400, "Profile Image is missing");
+  }
+
+  const profileImage = await uploadOnCloudinary(profileImageLocalPath);
+
+  if (!profileImage) {
+    throw new ApiError(400, "Error when file is uploading on Cloudinary");
+  }
+  const user = User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: {
+        profileImage: profileImage.url,
+      },
+    },
+    {
+      new: true,
+    }
+  ).select("-password");
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, user, "Profile Image is update Successfully"));
+});
+
+// const markAttendance = asyncHandler(async (req, res) => {
+//   const userId = req.user._id;
+
+//   const today = new Date();
+//   today.setHours(0, 0, 0, 0);
+
+//   const isAttendanceMarked = await Attendance.findOne({ userId, date: today });
+
+//   if (isAttendanceMarked) {
+//     throw new ApiError(400, "Attendance already marked for today");
+//   }
+
+//   const newAttendance = await Attendance.create({
+//     userId,
+//     date: today,
+//     status: "present",
+//   });
+
+//   return res
+//     .status(201)
+//     .json(
+//       new ApiResponse(200, newAttendance, "Attendance Marked Successfully")
+//     );
+// });
+
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  refreshAccessToken,
+  changeCurrentPassword,
+  updateProfileImage,
+};
+
+
+
+
