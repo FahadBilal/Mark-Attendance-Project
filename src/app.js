@@ -24,6 +24,11 @@ import userRouter from './routes/user.routes.js'
 
 app.use("/api/v1/users",userRouter)
 
+// Admin route
+import adminRouter from './routes/admin.route.js'
+
+app.use("/api/v1/admin",adminRouter);
+
 
 
 

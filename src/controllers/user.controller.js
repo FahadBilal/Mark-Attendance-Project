@@ -5,6 +5,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import { Attendance } from "../models/attendance.model.js";
+import { LeaveRequest } from "../models/leaveRequest.model.js";
 
 const generateAccessAndRefreshToken = async (userId) => {
   const user = await User.findOne(userId);
@@ -186,6 +187,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     const { accessToken, newRefreshToken } =
       await generateAccessAndRefreshToken(user._id);
+    
+      
 
     const options = {
       http: true,
@@ -199,7 +202,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          { accessToken, refreshToken: newRefreshToken },
+          { accessToken, refreshToken:newRefreshToken },
           "Refreshed Access Token"
         )
       );
@@ -209,11 +212,14 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 });
 
 const changeCurrentPassword = asyncHandler(async (req, res) => {
-  const { OldPassword, newPassword } = req.body;
+  const { oldPassword, newPassword } = req.body;
+  //console.log(oldPassword);
 
-  const user = await User.findById(rq.user._id);
+  const user = await User.findById(req.user._id);
+  // console.log(user)
 
-  const isPasswordValid = await user.isPasswordCorrect(OldPassword);
+  const isPasswordValid = await user.isPasswordCorrect(oldPassword);
+  //console.log(isPasswordValid)
 
   if (!isPasswordValid) {
     throw new ApiError(409, "Invalid old Password");
@@ -222,23 +228,28 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
   user.password = newPassword;
   await user.save({ validateBeforeSave: false });
 
-  res.status(200).json(ApiResponse(200, {}, "Password changed successfully"));
+  res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Password changed successfully"));
 });
 
 const updateProfileImage = asyncHandler(async (req, res) => {
   const profileImageLocalPath = req.file?.path;
+  //console.log(profileImageLocalPath);
+  
 
   if (!profileImageLocalPath) {
     throw new ApiError(400, "Profile Image is missing");
   }
 
   const profileImage = await uploadOnCloudinary(profileImageLocalPath);
+  //console.log(profileImage);
+  
 
   if (!profileImage) {
     throw new ApiError(400, "Error when file is uploading on Cloudinary");
   }
-  const user = User.findByIdAndUpdate(
-    req.user._id,
+  const user = await User.findByIdAndUpdate(req.user._id,
     {
       $set: {
         profileImage: profileImage.url,
@@ -247,37 +258,81 @@ const updateProfileImage = asyncHandler(async (req, res) => {
     {
       new: true,
     }
-  ).select("-password");
+  ).select(
+    "-password -refreshToken"
+  );
 
   res
     .status(200)
     .json(new ApiResponse(200, user, "Profile Image is update Successfully"));
 });
 
-// const markAttendance = asyncHandler(async (req, res) => {
-//   const userId = req.user._id;
+const markAttendance = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
 
-//   const today = new Date();
-//   today.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-//   const isAttendanceMarked = await Attendance.findOne({ userId, date: today });
+  const isAttendanceMarked = await Attendance.findOne({ userId, date: today });
 
-//   if (isAttendanceMarked) {
-//     throw new ApiError(400, "Attendance already marked for today");
-//   }
+  if (isAttendanceMarked) {
+    throw new ApiError(400, "Attendance already marked for today");
+  }
 
-//   const newAttendance = await Attendance.create({
-//     userId,
-//     date: today,
-//     status: "present",
-//   });
+  const newAttendance = await Attendance.create({
+    userId,
+    date: today,
+    status: "present",
+  });
 
-//   return res
-//     .status(201)
-//     .json(
-//       new ApiResponse(200, newAttendance, "Attendance Marked Successfully")
-//     );
-// });
+  return res
+    .status(201)
+    .json(
+      new ApiResponse(200, newAttendance, "Attendance Marked Successfully")
+    );
+});
+
+const submitLeaveRequest = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const { leaveDate, reason } = req.body;
+  if (!(leaveDate || reason)) {
+    throw new ApiError(400, "All fields are required");
+  }
+
+  const leaveRequest = await LeaveRequest.create({
+    userId,
+    leaveDate,
+    reason,
+  });
+
+  if (!leaveRequest) {
+    throw new ApiError(500, "Error while submit the leave request");
+  }
+
+  return res
+    .status(201)
+    .json(new ApiResponse(200, {}, "Leave Request Submitted Successfully"));
+});
+
+const viewAttendanceRecord = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const attendanceRecord = await Attendance.find({ userId }).sort({ date: -1 });
+
+  if (!attendanceRecord) {
+    throw new ApiError(400, "Attendace Record not find");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { attendanceRecord },
+        "Attendance Record Successfully"
+      )
+    );
+});
 
 export {
   registerUser,
@@ -286,8 +341,7 @@ export {
   refreshAccessToken,
   changeCurrentPassword,
   updateProfileImage,
+  markAttendance,
+  submitLeaveRequest,
+  viewAttendanceRecord,
 };
-
-
-
-
