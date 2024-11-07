@@ -3,7 +3,7 @@ import mongoose, {Schema} from "mongoose";
 const leaveRequestSchema = new Schema(
     {
         userId: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: 'User',
             required: true,
           },

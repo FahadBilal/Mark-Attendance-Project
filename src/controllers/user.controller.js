@@ -31,7 +31,7 @@ const registerUser = asyncHandler(async (req, res) => {
   // create user
   // return
 
-  const { fullName, email, password } = req.body;
+  const { fullName, email, password, role } = req.body;
 
   // console.log(email)
   // console.log(fullName)
@@ -66,20 +66,29 @@ const registerUser = asyncHandler(async (req, res) => {
     );
   }
 
+  const adminExist = await User.findOne({role:'admin'});
+
+  if(adminExist){
+    throw new ApiError(403,"Access Denied")
+  }
+  const userRole = role ==='admin'? 'admin':'student'
+
   const user = await User.create({
     fullName,
     email,
     password,
+    role:userRole,
     profileImage: profileImage.url,
   });
 
   const createdUser = await User.findOne(user?._id).select(
     "-password -refreshToken"
   );
+  const message = userRole === 'admin'?"Admin register successfuly":"User register  successfully";
 
   return res
     .status(201)
-    .json(new ApiResponse(200, createdUser, "User Register Succesfully"));
+    .json(new ApiResponse(200, createdUser, message));
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -101,6 +110,7 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "User not Exist");
   }
 
+
   const isPasswordValid = await user.isPasswordCorrect(password);
 
   if (!isPasswordValid) {
@@ -114,6 +124,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const loggedIn = await User.findOne(user._id).select(
     "-password -refreshToken"
   );
+  const message = loggedIn.role==='admin'?"Admin login successfully":"User login successfuly"
 
   const options = {
     http: true,
@@ -132,7 +143,7 @@ const loginUser = asyncHandler(async (req, res) => {
           accessToken,
           refreshToken,
         },
-        "User LoggedIn Successfully"
+        message
       )
     );
 });

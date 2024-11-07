@@ -2,7 +2,9 @@ import { Router } from "express";
 import { verifyJwt } from "../midllewares/auth.middlware.js";
 import { authorizeAdmin } from "../midllewares/admin.middleware.js";
 import {
+  adminDashboard,
   createAttendanceRecord,
+  deleteAttendanceRecord,
   generateGradeOnAttendanceRecord,
   getAllAttendances,
   getAllGrades,
@@ -14,6 +16,8 @@ import {
 
 const router = Router();
 
+router.route("/").get(verifyJwt,authorizeAdmin,adminDashboard)
+
 router.route("/allUsers").get(verifyJwt, authorizeAdmin, getAllUsers);
 
 router.route("/attendance").get(verifyJwt, authorizeAdmin, getAllAttendances);
@@ -23,24 +27,24 @@ router
   .post(verifyJwt, authorizeAdmin, createAttendanceRecord);
 
 router
-  .route("/updateAttendanceRecord")
-  .patch(verifyJwt, authorizeAdmin, updateAttendanceRecord);
+  .route("/updateAttendance/:attendanceId")
+  .put(verifyJwt, authorizeAdmin, updateAttendanceRecord);
 
 router
-  .route("/updateAttendanceDelete")
-  .delete(verifyJwt, authorizeAdmin, getAllUsers);
+  .route("/deleteAttendance/:attendanceId")
+  .delete(verifyJwt, authorizeAdmin, deleteAttendanceRecord);
 
 router
   .route("/allLeaveRequest")
   .get(verifyJwt, authorizeAdmin, getAllLeaveRequest);
 
 router
-  .route("/updateLeaveRequest")
-  .get(verifyJwt, authorizeAdmin, updateLeaveRequest);
+  .route("/updateLeaveRequest/:leaveRequestId")
+  .patch(verifyJwt, authorizeAdmin, updateLeaveRequest);
 
 router
   .route("/generateGrade")
-  .get(verifyJwt, authorizeAdmin, generateGradeOnAttendanceRecord);
+  .post(verifyJwt, authorizeAdmin, generateGradeOnAttendanceRecord);
 
 router
   .route("/allGrades")

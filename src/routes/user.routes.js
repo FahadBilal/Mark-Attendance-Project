@@ -6,7 +6,7 @@ import {
   logoutUser,
   markAttendance,
   refreshAccessToken,
-  registerUser,
+  registeregisterrUser,
   submitLeaveRequest,
   updateProfileImage,
   viewAttendanceRecord,
@@ -15,7 +15,7 @@ import { verifyJwt } from "../midllewares/auth.middlware.js";
 
 const router = Router();
 
-router.route("/register").post(upload.single("profileImage"), registerUser);
+router.route("/").post(upload.single("profileImage"), registerUser);
 
 router.route("/login").post(loginUser);
 

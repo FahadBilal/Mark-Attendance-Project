@@ -6,6 +6,11 @@ import { Attendance } from "../models/attendance.model.js";
 import { LeaveRequest } from "../models/leaveRequest.model.js";
 import { Grade } from "../models/grade.model.js";
 
+const adminDashboard = asyncHandler( async(req,res)=>{
+  res.status(200)
+  .json(new ApiResponse(200,{},"Welcome to the admin Dashboard"))
+})
+
 const getAllUsers = asyncHandler(async (_, res) => {
   const users = await User.find({ role: "student" }).select("-password");
 
@@ -20,9 +25,11 @@ const getAllUsers = asyncHandler(async (_, res) => {
 
 const getAllAttendances = asyncHandler(async (_, res) => {
   const attendanceRecord = await Attendance.find().populate(
-    "user",
+    "userId",
     "fullName email"
   );
+
+  //console.log(attendanceRecord)
 
   if (!attendanceRecord) {
     throw new ApiError(500, "Error fetching all attendance record");
@@ -31,7 +38,7 @@ const getAllAttendances = asyncHandler(async (_, res) => {
   return res
     .status(200)
     .json(
-      new ApiResponse(200, attendanceRecord, "Record Fetched Successfully")
+      new ApiResponse(200, {attendanceRecord}, "Record Fetched Successfully")
     );
 });
 
@@ -39,7 +46,7 @@ const createAttendanceRecord = asyncHandler(async (req, res) => {
   const { userId, date, status } = req.body;
 
   const attendanceRecord = await Attendance.create({
-    user: userId,
+    userId,
     date,
     status,
   });
@@ -54,23 +61,23 @@ const createAttendanceRecord = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         attendanceRecord,
-        "Attendance record created successfully"
+        "Attendance  created successfully"
       )
     );
 });
 
 const updateAttendanceRecord = asyncHandler(async (req, res) => {
-  const { userId } = req.param;
+  const { attendanceId } = req.params;
   const { status } = req.body;
 
   const updateRecord = await Attendance.findByIdAndUpdate(
-    userId,
+    attendanceId,
     { status },
     { new: true }
   );
 
   if (!updateRecord) {
-    throw new ApiError(500, "Error when updated the attendance record");
+    throw new ApiError(500, "Error when updated the attendance ");
   }
 
   return res
@@ -79,27 +86,27 @@ const updateAttendanceRecord = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         updateRecord,
-        "Attendance record update successfully"
+        "Attendance  update successfully"
       )
     );
 });
 
 const deleteAttendanceRecord = asyncHandler(async (req, res) => {
-  const { userId } = req.param;
+  const { attendanceId } = req.params;
 
-  const deleteRecord = await Attendance.findByIdAndDelete(userId);
+  const deleteRecord = await Attendance.findByIdAndDelete(attendanceId);
 
   if (!deleteRecord) {
-    throw new ApiError(500, "Error when deleting a attendance record");
+    throw new ApiError(500, "Error when deleting a attendance ");
   }
   return res
     .status(200)
-    .json(new ApiResponse(200, {}, "Attendance record deleted Successfully"));
+    .json(new ApiResponse(200, {}, "Attendance  deleted Successfully"));
 });
 
 const getAllLeaveRequest = asyncHandler(async (_, res) => {
   const leaveRequest = await LeaveRequest.find().populate(
-    "user",
+    "userId",
     "fullName email"
   );
 
@@ -119,16 +126,16 @@ const getAllLeaveRequest = asyncHandler(async (_, res) => {
 });
 
 const updateLeaveRequest = asyncHandler(async (req, res) => {
-  const { userId } = req.param;
+  const { leaveRequestId } = req.params;
   const { status } = req.body;
 
-  const updateRequest = await LeaveRequest.findByIdAndUpdate(
-    userId,
+  const updateRecord = await LeaveRequest.findByIdAndUpdate(
+    leaveRequestId,
     { status },
     { new: true }
   );
 
-  if (!updateRequest) {
+  if (!updateRecord) {
     throw new ApiError(500, "Error when updated the Leave Request");
   }
 
@@ -140,12 +147,15 @@ const updateLeaveRequest = asyncHandler(async (req, res) => {
 });
 
 const generateGradeOnAttendanceRecord = asyncHandler(async (_, res) => {
+  const totalDays = 30; // Define the total number of days
+
+  // Aggregate attendance data by user
   const attendanceData = await Attendance.aggregate([
     {
       $group: {
-        _id: "$user",
+        _id: "$userId",
         totalDays: { $sum: 1 },
-        presentDay: {
+        presentDays: {
           $sum: {
             $cond: [{ $eq: ["$status", "present"] }, 1, 0],
           },
@@ -154,39 +164,56 @@ const generateGradeOnAttendanceRecord = asyncHandler(async (_, res) => {
     },
   ]);
 
-  if (!attendanceData) {
+  if (!attendanceData || attendanceData.length === 0) {
     throw new ApiError(500, "Error when generating the attendance report");
   }
 
+  console.log(attendanceData)
+  const gradeResults = [];
+
   for (const record of attendanceData) {
-    const attendancePercentage = (totalDays / presentDay) * 100;
 
-    let grade = "";
+    const { presentDays } = record;
 
-    if (attendancePercentage >= 90) {
-      grade: "A";
-    } else if (attendanceData >= 80) {
-      grade: "B";
-    } else if (attendanceData >= 70) {
-      grade: "C";
-    } else if (attendanceData >= 60) {
-      grade: "D";
-    } else {
-      grade: "F";
+    // Check if presentDays is defined and totalDays is non-zero to prevent NaN
+    if (presentDays == null || totalDays === 0) {
+      console.warn("Invalid attendance data; skipping record.");
+      continue;
     }
 
+    // Calculate attendance percentage
+    const attendancePercentage = (presentDays / totalDays) * 100;
+
+    // Determine grade based on attendance percentage
+    let grade;
+    if (attendancePercentage >= 90) {
+      grade = "A";
+    } else if (attendancePercentage >= 80) {
+      grade = "B";
+    } else if (attendancePercentage >= 70) {
+      grade = "C";
+    } else if (attendancePercentage >= 60) {
+      grade = "D";
+    } else {
+      grade = "F";
+    }
+
+    // Create a new grade record for the user
     const newGrade = await Grade.create({
-      userId:record._id,
+      userId: record._id,
       attendancePercentage,
       grade,
-      description:`Grade based on attendance percentage ${attendancePercentage}`
+      description: `Grade based on attendance percentage of ${attendancePercentage.toFixed(2)}%`,
     });
+
+    gradeResults.push(newGrade);
   }
 
   return res
     .status(200)
-    .json(new ApiResponse(200, {}, "Grade generate successfully"));
+    .json(new ApiResponse(200, gradeResults, "Grades generated successfully"));
 });
+
 
 const getAllGrades = asyncHandler( async (req, res)=>{
   const gradeReport = await Grade.aggregate([
@@ -225,6 +252,7 @@ const getAllGrades = asyncHandler( async (req, res)=>{
 })
 
 export {
+  adminDashboard,
   getAllUsers,
   getAllAttendances,
   createAttendanceRecord,
