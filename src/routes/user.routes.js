@@ -6,7 +6,7 @@ import {
   logoutUser,
   markAttendance,
   refreshAccessToken,
-  registeregisterrUser,
+  registerUser,
   submitLeaveRequest,
   updateProfileImage,
   viewAttendanceRecord,

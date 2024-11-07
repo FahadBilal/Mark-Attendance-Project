@@ -6,10 +6,11 @@ import { Attendance } from "../models/attendance.model.js";
 import { LeaveRequest } from "../models/leaveRequest.model.js";
 import { Grade } from "../models/grade.model.js";
 
-const adminDashboard = asyncHandler( async(req,res)=>{
-  res.status(200)
-  .json(new ApiResponse(200,{},"Welcome to the admin Dashboard"))
-})
+const adminDashboard = asyncHandler(async (req, res) => {
+  res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Welcome to the admin Dashboard"));
+});
 
 const getAllUsers = asyncHandler(async (_, res) => {
   const users = await User.find({ role: "student" }).select("-password");
@@ -38,7 +39,7 @@ const getAllAttendances = asyncHandler(async (_, res) => {
   return res
     .status(200)
     .json(
-      new ApiResponse(200, {attendanceRecord}, "Record Fetched Successfully")
+      new ApiResponse(200, { attendanceRecord }, "Record Fetched Successfully")
     );
 });
 
@@ -58,11 +59,7 @@ const createAttendanceRecord = asyncHandler(async (req, res) => {
   return res
     .status(201)
     .json(
-      new ApiResponse(
-        200,
-        attendanceRecord,
-        "Attendance  created successfully"
-      )
+      new ApiResponse(200, attendanceRecord, "Attendance  created successfully")
     );
 });
 
@@ -83,11 +80,7 @@ const updateAttendanceRecord = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new ApiResponse(
-        200,
-        updateRecord,
-        "Attendance  update successfully"
-      )
+      new ApiResponse(200, updateRecord, "Attendance  update successfully")
     );
 });
 
@@ -147,9 +140,6 @@ const updateLeaveRequest = asyncHandler(async (req, res) => {
 });
 
 const generateGradeOnAttendanceRecord = asyncHandler(async (_, res) => {
-  const totalDays = 30; // Define the total number of days
-
-  // Aggregate attendance data by user
   const attendanceData = await Attendance.aggregate([
     {
       $group: {
@@ -168,23 +158,17 @@ const generateGradeOnAttendanceRecord = asyncHandler(async (_, res) => {
     throw new ApiError(500, "Error when generating the attendance report");
   }
 
-  console.log(attendanceData)
+  //console.log(attendanceData)
   const gradeResults = [];
 
   for (const record of attendanceData) {
-
-    const { presentDays } = record;
-
-    // Check if presentDays is defined and totalDays is non-zero to prevent NaN
-    if (presentDays == null || totalDays === 0) {
+    if (record.presentDays == null || record.totalDays === 0) {
       console.warn("Invalid attendance data; skipping record.");
       continue;
     }
 
-    // Calculate attendance percentage
-    const attendancePercentage = (presentDays / totalDays) * 100;
+    const attendancePercentage = (record.presentDays / record.totalDays) * 100;
 
-    // Determine grade based on attendance percentage
     let grade;
     if (attendancePercentage >= 90) {
       grade = "A";
@@ -198,12 +182,13 @@ const generateGradeOnAttendanceRecord = asyncHandler(async (_, res) => {
       grade = "F";
     }
 
-    // Create a new grade record for the user
     const newGrade = await Grade.create({
       userId: record._id,
       attendancePercentage,
       grade,
-      description: `Grade based on attendance percentage of ${attendancePercentage.toFixed(2)}%`,
+      description: `Grade based on attendance percentage of ${attendancePercentage.toFixed(
+        2
+      )}%`,
     });
 
     gradeResults.push(newGrade);
@@ -214,42 +199,43 @@ const generateGradeOnAttendanceRecord = asyncHandler(async (_, res) => {
     .json(new ApiResponse(200, gradeResults, "Grades generated successfully"));
 });
 
-
-const getAllGrades = asyncHandler( async (req, res)=>{
+const getAllGrades = asyncHandler(async (req, res) => {
   const gradeReport = await Grade.aggregate([
     {
-      $lookup:{
-        from:'users',
-        localField:'userId',
-        foreignField:'_id',
-        as:'userDetails'
-      }
+      $lookup: {
+        from: "users",
+        localField: "userId",
+        foreignField: "_id",
+        as: "userDetails",
+      },
     },
     {
-      $unwind:'$userDetails'
+      $unwind: "$userDetails",
     },
     {
-      $project:{
-        _id:1,
-        userId:'$userDetails._id',
-        fullName:'$userDetails.fullName',
-        email:'$userDetails.email',
-        attendancePercentage:1,
-        grade:1,
-        description:1,
-        createdAt:1
-
-      }
-    }
+      $project: {
+        _id: 1,
+        userId: "$userDetails._id",
+        fullName: "$userDetails.fullName",
+        email: "$userDetails.email",
+        attendancePercentage: 1,
+        grade: 1,
+        description: 1,
+        createdAt: 1,
+      },
+    },
   ]);
 
-  if(!gradeReport){
-    throw new ApiError(500,"Error when generating the Grade Report");
+  if (!gradeReport) {
+    throw new ApiError(500, "Error when generating the Grade Report");
   }
 
-  return res.status(200)
-  .json(new ApiResponse(200,gradeReport,"Grade report retrived successfully"))
-})
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, gradeReport, "Grade report retrived successfully")
+    );
+});
 
 export {
   adminDashboard,
