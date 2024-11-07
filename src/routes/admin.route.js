@@ -3,7 +3,9 @@ import { verifyJwt } from "../midllewares/auth.middlware.js";
 import { authorizeAdmin } from "../midllewares/admin.middleware.js";
 import {
   createAttendanceRecord,
+  generateGradeOnAttendanceRecord,
   getAllAttendances,
+  getAllGrades,
   getAllLeaveRequest,
   getAllUsers,
   updateAttendanceRecord,
@@ -37,7 +39,11 @@ router
   .get(verifyJwt, authorizeAdmin, updateLeaveRequest);
 
 router
-  .route("/generateAttendanceRecord")
-  .get(verifyJwt, authorizeAdmin, getAllUsers);
+  .route("/generateGrade")
+  .get(verifyJwt, authorizeAdmin, generateGradeOnAttendanceRecord);
+
+router
+  .route("/allGrades")
+  .get(verifyJwt, authorizeAdmin, getAllGrades);
 
 export default router;

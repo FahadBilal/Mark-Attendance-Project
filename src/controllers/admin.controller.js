@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
 import { Attendance } from "../models/attendance.model.js";
 import { LeaveRequest } from "../models/leaveRequest.model.js";
+import { Grade } from "../models/grade.model.js";
 
 const getAllUsers = asyncHandler(async (_, res) => {
   const users = await User.find({ role: "student" }).select("-password");
@@ -138,8 +139,8 @@ const updateLeaveRequest = asyncHandler(async (req, res) => {
     );
 });
 
-const generateAttendanceRecord = asyncHandler(async (req, res) => {
-  const report = await Attendance.aggregate([
+const generateGradeOnAttendanceRecord = asyncHandler(async (_, res) => {
+  const attendanceData = await Attendance.aggregate([
     {
       $group: {
         _id: "$user",
@@ -153,13 +154,75 @@ const generateAttendanceRecord = asyncHandler(async (req, res) => {
     },
   ]);
 
-  if (!report) {
+  if (!attendanceData) {
     throw new ApiError(500, "Error when generating the attendance report");
   }
+
+  for (const record of attendanceData) {
+    const attendancePercentage = (totalDays / presentDay) * 100;
+
+    let grade = "";
+
+    if (attendancePercentage >= 90) {
+      grade: "A";
+    } else if (attendanceData >= 80) {
+      grade: "B";
+    } else if (attendanceData >= 70) {
+      grade: "C";
+    } else if (attendanceData >= 60) {
+      grade: "D";
+    } else {
+      grade: "F";
+    }
+
+    const newGrade = await Grade.create({
+      userId:record._id,
+      attendancePercentage,
+      grade,
+      description:`Grade based on attendance percentage ${attendancePercentage}`
+    });
+  }
+
   return res
     .status(200)
-    .json(new ApiResponse(200, report, "Report generate successfully"));
+    .json(new ApiResponse(200, {}, "Grade generate successfully"));
 });
+
+const getAllGrades = asyncHandler( async (req, res)=>{
+  const gradeReport = await Grade.aggregate([
+    {
+      $lookup:{
+        from:'users',
+        localField:'userId',
+        foreignField:'_id',
+        as:'userDetails'
+      }
+    },
+    {
+      $unwind:'$userDetails'
+    },
+    {
+      $project:{
+        _id:1,
+        userId:'$userDetails._id',
+        fullName:'$userDetails.fullName',
+        email:'$userDetails.email',
+        attendancePercentage:1,
+        grade:1,
+        description:1,
+        createdAt:1
+
+      }
+    }
+  ]);
+
+  if(!gradeReport){
+    throw new ApiError(500,"Error when generating the Grade Report");
+  }
+
+  return res.status(200)
+  .json(new ApiResponse(200,gradeReport,"Grade report retrived successfully"))
+})
 
 export {
   getAllUsers,
@@ -169,5 +232,6 @@ export {
   deleteAttendanceRecord,
   getAllLeaveRequest,
   updateLeaveRequest,
-  generateAttendanceRecord,
+  generateGradeOnAttendanceRecord,
+  getAllGrades,
 };

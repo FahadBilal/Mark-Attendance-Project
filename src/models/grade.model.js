@@ -2,22 +2,28 @@ import mongoose, {Schema} from "mongoose";
 
 const gradeSchema = new Schema(
     {
-        gradeName: {
-            type: String,
-            required: true,
-            trim: true,
-          },
-          minAttendancePercentage: {
-            type: Number,
-            required: true,
-            min: 0,
-            max: 100,
-          },
-          description: {
-            type: String,
-            trim: true,
-          },
+      userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User', // Reference to the User model
+        required: true,
+      },
+      attendancePercentage: {
+        type: Number,
+        required: true,
+        min: 0,
+        max: 100, // Attendance percentage should be between 0 and 100
+      },
+      grade: {
+        type: String,
+        required: true,
+        enum: ['A', 'B', 'C', 'D', 'F'], // Only these grades are allowed
+      },
+      description: {
+        type: String,
+        required: true,
+        trim: true,
     },
+  },
     {timestamps:true}
 )
 
