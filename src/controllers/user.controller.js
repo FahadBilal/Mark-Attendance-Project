@@ -166,11 +166,12 @@ const logoutUser = asyncHandler(async (req, res) => {
     secure: true,
   };
 
+  const message = req.user.role === 'admin'?'Admin Logout Successfully':'User Logout Successfully'
   res
     .status(200)
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
-    .json(new ApiResponse(200, {}, "User Logout Successfully"));
+    .json(new ApiResponse(200, {}, message));
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
