@@ -6,6 +6,8 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import { Attendance } from "../models/attendance.model.js";
 import { LeaveRequest } from "../models/leaveRequest.model.js";
+import sendOptMail from "../utils/nodeMailer.js";
+import { EmailVerification } from "../models/emailVerification.model.js";
 
 const generateAccessAndRefreshToken = async (userId) => {
   const user = await User.findOne(userId);
@@ -21,6 +23,61 @@ const generateAccessAndRefreshToken = async (userId) => {
   return { accessToken, refreshToken };
 };
 
+const optRequest = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  console.log(email);
+  const existedRequest = await EmailVerification.findOne({ email });
+  console.log(existedRequest);
+
+  if (existedRequest) {
+    await existedRequest.deleteOne();
+  }
+
+  const opt = Math.floor(100000 + Math.random() * 900000).toString();
+  // console.log(opt);
+
+  const optExpiry = Date.now() + 5 * 60 * 1000;
+
+  // console.log(optExpiry);
+
+  const emailVerification = await EmailVerification.create({
+    email,
+    opt,
+    optExpiry,
+  });
+  // console.log(emailVerification);
+
+  // await  emailVerification.save();
+
+  if (!emailVerification) {
+    throw new ApiError(400, "Opt does not create");
+  }
+
+  await sendOptMail(email, opt);
+
+  res.status(201).json(new ApiResponse(200, {}, "Opt sent to Email"));
+});
+
+const verifyOpt = asyncHandler(async (req, res) => {
+  const { email, opt } = req.body;
+
+  const optRecord = await EmailVerification.findOne({ email });
+
+  if (!optRecord || optRecord.opt !== opt) {
+    throw new ApiError(400, "Invalid Email or Opt");
+  }
+
+  if(optRecord.otpExpiry < Date.now()){
+    throw new ApiError(400,"Expired Opt")
+  }
+
+  optRecord.isVerified = true;
+  await optRecord.save();
+
+  res.status(200).json(new ApiResponse(200, {}, "Email Verified Sucessfully"));
+});
+
 const registerUser = asyncHandler(async (req, res) => {
   // get user detial
   // all fields requied
@@ -33,7 +90,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const { fullName, email, password, role } = req.body;
 
-  // console.log(email)
+  //console.log(email)
   // console.log(fullName)
 
   if ([fullName, email, password].some((field) => field?.trim() === "")) {
@@ -66,29 +123,43 @@ const registerUser = asyncHandler(async (req, res) => {
     );
   }
 
-  const adminExist = await User.findOne({role:'admin'});
+  const adminExist = await User.findOne({ role: "admin" });
 
-  if(adminExist){
-    throw new ApiError(403,"Access Denied")
+  if (adminExist && role === "admin") {
+    throw new ApiError(403, "Admin already existed");
   }
-  const userRole = role ==='admin'? 'admin':'student'
+  const userRole = role === "admin" ? "admin" : "student";
+
+  // Opt email is verified
+
+  const optRecord = await EmailVerification.findOne({
+    email,
+    isVerified: true,
+  });
+
+  if (!optRecord) {
+    throw new ApiError(400, "Email is not verified");
+  }
+
+  await optRecord.deleteOne();
 
   const user = await User.create({
     fullName,
     email,
     password,
-    role:userRole,
+    role: userRole,
     profileImage: profileImage.url,
   });
 
   const createdUser = await User.findOne(user?._id).select(
     "-password -refreshToken"
   );
-  const message = userRole === 'admin'?"Admin register successfuly":"User register  successfully";
+  const message =
+    userRole === "admin"
+      ? "Admin register successfuly"
+      : "User register  successfully";
 
-  return res
-    .status(201)
-    .json(new ApiResponse(200, createdUser, message));
+  return res.status(201).json(new ApiResponse(200, createdUser, message));
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -110,7 +181,6 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "User not Exist");
   }
 
-
   const isPasswordValid = await user.isPasswordCorrect(password);
 
   if (!isPasswordValid) {
@@ -124,7 +194,10 @@ const loginUser = asyncHandler(async (req, res) => {
   const loggedIn = await User.findOne(user._id).select(
     "-password -refreshToken"
   );
-  const message = loggedIn.role==='admin'?"Admin login successfully":"User login successfuly"
+  const message =
+    loggedIn.role === "admin"
+      ? "Admin login successfully"
+      : "User login successfuly";
 
   const options = {
     http: true,
@@ -166,7 +239,10 @@ const logoutUser = asyncHandler(async (req, res) => {
     secure: true,
   };
 
-  const message = req.user.role === 'admin'?'Admin Logout Successfully':'User Logout Successfully'
+  const message =
+    req.user.role === "admin"
+      ? "Admin Logout Successfully"
+      : "User Logout Successfully";
   res
     .status(200)
     .clearCookie("accessToken", options)
@@ -199,8 +275,6 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     const { accessToken, newRefreshToken } =
       await generateAccessAndRefreshToken(user._id);
-    
-      
 
     const options = {
       http: true,
@@ -214,7 +288,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          { accessToken, refreshToken:newRefreshToken },
+          { accessToken, refreshToken: newRefreshToken },
           "Refreshed Access Token"
         )
       );
@@ -248,7 +322,6 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 const updateProfileImage = asyncHandler(async (req, res) => {
   const profileImageLocalPath = req.file?.path;
   //console.log(profileImageLocalPath);
-  
 
   if (!profileImageLocalPath) {
     throw new ApiError(400, "Profile Image is missing");
@@ -256,12 +329,12 @@ const updateProfileImage = asyncHandler(async (req, res) => {
 
   const profileImage = await uploadOnCloudinary(profileImageLocalPath);
   //console.log(profileImage);
-  
 
   if (!profileImage) {
     throw new ApiError(400, "Error when file is uploading on Cloudinary");
   }
-  const user = await User.findByIdAndUpdate(req.user._id,
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
     {
       $set: {
         profileImage: profileImage.url,
@@ -270,9 +343,7 @@ const updateProfileImage = asyncHandler(async (req, res) => {
     {
       new: true,
     }
-  ).select(
-    "-password -refreshToken"
-  );
+  ).select("-password -refreshToken");
 
   res
     .status(200)
@@ -356,4 +427,6 @@ export {
   markAttendance,
   submitLeaveRequest,
   viewAttendanceRecord,
+  verifyOpt,
+  optRequest,
 };

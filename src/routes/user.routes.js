@@ -5,17 +5,23 @@ import {
   loginUser,
   logoutUser,
   markAttendance,
+  optRequest,
   refreshAccessToken,
   registerUser,
   submitLeaveRequest,
   updateProfileImage,
+  verifyOpt,
   viewAttendanceRecord,
 } from "../controllers/user.controller.js";
 import { verifyJwt } from "../midllewares/auth.middlware.js";
 
 const router = Router();
 
-router.route("/").post(upload.single("profileImage"), registerUser);
+router.route("/requestOpt").post(optRequest);
+
+router.route("/register").post(upload.single("profileImage"), registerUser);
+
+router.route("/verifyOpt").post(verifyOpt)
 
 router.route("/login").post(loginUser);
 
