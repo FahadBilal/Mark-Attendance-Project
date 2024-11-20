@@ -26,9 +26,9 @@ const generateAccessAndRefreshToken = async (userId) => {
 const optRequest = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
-  console.log(email);
+  // console.log(email);
   const existedRequest = await EmailVerification.findOne({ email });
-  console.log(existedRequest);
+  // console.log(existedRequest);
 
   if (existedRequest) {
     await existedRequest.deleteOne();
