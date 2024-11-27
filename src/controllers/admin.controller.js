@@ -46,6 +46,10 @@ const getAllAttendances = asyncHandler(async (_, res) => {
 const createAttendanceRecord = asyncHandler(async (req, res) => {
   const { userId, date, status } = req.body;
 
+  if([userId, date, status].some((field)=>field === "")){
+    throw new ApiError(400,"All fields are required");
+  }
+
   const attendanceRecord = await Attendance.create({
     userId,
     date,
