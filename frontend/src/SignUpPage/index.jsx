@@ -1,175 +1,168 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { apiurl } from '../global/Api.jsx';
+import React from "react";
+import Input from "../global/Input.jsx";
+import { useForm } from "react-hook-form";
 
 const Register = () => {
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('student');
-  const [profileImage, setProfileImage] = useState(null);
-  const [isOtpSent, setIsOtpSent] = useState(false);
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  // const [fullName, setFullName] = useState('');
+  // const [email, setEmail] = useState('');
+  // const [otp, setOtp] = useState('');
+  // const [password, setPassword] = useState('');
+  // const [role, setRole] = useState('student');
+  // const [profileImage, setProfileImage] = useState(null);
+  // const [isOtpSent, setIsOtpSent] = useState(false);
+  // const [isEmailVerified, setIsEmailVerified] = useState(false);
+  // const [error, setError] = useState('');
+  // const [success, setSuccess] = useState('');
 
-  // Function to request OTP
-  const requestOtp = async () => {
-    try {
-      const response = await axios.post(`${apiurl}/users/requestOpt`, { email });
-      setIsOtpSent(true);
-      setError('');
-      setSuccess('OTP has been sent to your email');
-    } catch (error) {
-      setError('Error requesting OTP');
-    }
-  };
+  // // Function to request OTP
+  // const requestOtp = async () => {
+  //   try {
+  //     const response = await axios.post(`${apiurl}/users/requestOpt`, { email });
+  //     setIsOtpSent(true);
+  //     setError('');
+  //     setSuccess('OTP has been sent to your email');
+  //   } catch (error) {
+  //     setError('Error requesting OTP');
+  //   }
+  // };
 
-  // Function to verify OTP
-  const verifyOtp = async () => {
-    try {
-      await axios.post(`${apiurl}/users/verifyOpt`, { email, otp });
-      setIsEmailVerified(true);
-      setSuccess('Email verified successfully');
-      setError('');
-    } catch (error) {
-      setError('Invalid OTP or verification failed');
-    }
-  };
+  // // Function to verify OTP
+  // const verifyOtp = async () => {
+  //   try {
+  //     await axios.post(`${apiurl}/users/verifyOpt`, { email, otp });
+  //     setIsEmailVerified(true);
+  //     setSuccess('Email verified successfully');
+  //     setError('');
+  //   } catch (error) {
+  //     setError('Invalid OTP or verification failed');
+  //   }
+  // };
 
-  // Function to handle registration
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    
-    if (!isEmailVerified) {
-      setError('Please verify your email before registering');
-      return;
-    }
+  // // Function to handle registration
+  // const handleRegister = async (e) => {
+  //   e.preventDefault();
 
-    const formData = new FormData();
-    formData.append('fullName', fullName);
-    formData.append('email', email);
-    formData.append('password', password);
-    formData.append('role', role);
-    if (profileImage) {
-      formData.append('profileImage', profileImage);
-    }
+  //   if (!isEmailVerified) {
+  //     setError('Please verify your email before registering');
+  //     return;
+  //   }
 
-    try {
-      const response = await axios.post(`${apiurl}/users/register`,formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      setSuccess(response.data.message);
-      setError('');
-    } catch (error) {
-      setError(error.response?.data?.message || 'Registration failed');
-    }
-  };
+  //   const formData = new FormData();
+  //   formData.append('fullName', fullName);
+  //   formData.append('email', email);
+  //   formData.append('password', password);
+  //   formData.append('role', role);
+  //   if (profileImage) {
+  //     formData.append('profileImage', profileImage);
+  //   }
 
+  //   try {
+  //     const response = await axios.post(`${apiurl}/users/register`,formData, {
+  //       headers: { 'Content-Type': 'multipart/form-data' },
+  //     });
+  //     setSuccess(response.data.message);
+  //     setError('');
+  //   } catch (error) {
+  //     setError(error.response?.data?.message || 'Registration failed');
+  //   }
+  // };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4 text-center">Register</h2>
-        
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        {success && <p className="text-green-500 mb-4">{success}</p>}
-
-        <form onSubmit={handleRegister} encType="multipart/form-data">
-          <div className="mb-4">
-            <label className="block text-gray-700">Full Name</label>
-            <input
+    <div className="grid justify-items-center content-center  min-h-screen">
+      <div className=" w-full bg-blue-500 p-10  max-w-lg rounded-lg shadow-lg ">
+        <h2 className="text-white font-satoshi font-extrabold text-2xl text-center mb-4">
+          Register
+        </h2>
+        <form onSubmit={handleSubmit}>
+          {/* FullName */}
+          <div>
+            <Input
+              label="FullName"
               type="text"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-              required
+              placeholder="Enter your full name"
+              className={`${errors.name ? "border-red-500" : ""}`}
+              {...register("name", {
+                required: "FullName is required"
+              })}
             />
+            {errors.name && (
+              <span className="text-red-500">{errors.name.message}</span>
+            )}
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700">Email</label>
-            <input
+          {/* Email */}
+          <div>
+            <Input
+              label="Email"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-              required
+              placeholder="Enter your Email"
+              className={`${errors.name ? "border-red-500" : ""}`}
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                  message: "Inavlid Email address",
+                },
+              })}
             />
+            {errors.email && (
+              <span className="text-red-500">{errors.email.message}</span>
+            )}
           </div>
 
-          {!isOtpSent && (
-            <button
-              type="button"
-              onClick={requestOtp}
-              className="w-full py-2 bg-blue-500 text-white rounded-lg mt-2 hover:bg-blue-600 focus:outline-none"
-            >
-              Send OTP
-            </button>
-          )}
+          {/* Opt */}
+          <div>
+            <Input
+              label="Opt"
+              type="text"
+              placeholder="Enter Opt"
+              className={`${errors.opt ? "border-red-500" : ""}`}
+              {...register("opt", {
+                required: "Opt is required"
+              })}
+            />
+            {errors.opt && (
+              <span className="text-red-500">{errors.opt.message}</span>
+            )}
+          </div>
+          
+          {/* Profile Image */}
+          <div>
+            <Input
+              label="Profile Image"
+              type="file"
+              className={`${errors.file ? "border-red-500" : ""}`}
+              {...register("file", {
+                required: "Profile Image is required"
+              })}
+            />
+            {errors.file && (
+              <span className="text-red-500">{errors.file.message}</span>
+            )}
+          </div>
 
-          {isOtpSent && !isEmailVerified && (
-            <div className="mb-4">
-              <label className="block text-gray-700">Enter OTP</label>
-              <input
-                type="text"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-                required
-              />
-              <button
-                type="button"
-                onClick={verifyOtp}
-                className="w-full py-2 bg-green-500 text-white rounded-lg mt-2 hover:bg-green-600 focus:outline-none"
-              >
-                Verify OTP
-              </button>
-            </div>
-          )}
+          {/* Password */}
+          <div>
+            <Input
+              label="Password"
+              type="password"
+              placeholder="Enter your Password"
+              className={`${errors.password ? "border-red-500" : ""}`}
+              {...register("password", {
+                required: "Password is required"
+              })}
+            />
+            {errors.password && (
+              <span className="text-red-500">{errors.paasword.message}</span>
+            )}
+          </div>
 
-          {isEmailVerified && (
-            <>
-              <div className="mb-4">
-                <label className="block text-gray-700">Password</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-                  required
-                />
-              </div>
 
-              <div className="mb-4">
-                <label className="block text-gray-700">Role</label>
-                <select
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-                >
-                  <option value="student">Student</option>
-                  <option value="admin">Admin</option>
-                </select>
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-gray-700">Profile Image</label>
-                <input
-                  type="file"
-                  onChange={(e) => setProfileImage(e.target.files[0])}
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-2 bg-green-500 text-white rounded-lg mt-2 hover:bg-green-600 focus:outline-none"
-              >
-                Register
-              </button>
-            </>
-          )}
         </form>
       </div>
     </div>
