@@ -5,7 +5,7 @@ import Button from "../global/Button.jsx";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { apiurl } from "../global/Api.jsx";
-import toast from 'react-hot-toast'
+import {toast} from 'react-hot-toast'
 
 const Register = () => {
   const {
@@ -26,7 +26,7 @@ const Register = () => {
       setIsOptSent(true)
       toast.success(response.data.message)
     } catch (error) {
-      toast.error()
+      toast.error("Failed to send OTP. Please try again.")
     }
 
   };
@@ -41,13 +41,13 @@ const Register = () => {
       setIsEmailVerified(true)
       toast.success(response.data.message)
     } catch (error) {
-      toast.error()
+      toast.error("Invalid OPT. Please try again.")
     }
   };
 
   const onSubmit = async (data) => {
     if(!isEmailVerified){
-      toast.error()
+      toast.error("Please Verify Email before Registering.")
       return;
     }
 
@@ -69,7 +69,7 @@ const Register = () => {
       console.log(response)
       toast.success(response.data.message);
     } catch (error) {
-      toast.error()
+      toast.error("Registration Failed. Please try again.")
     }
 
   };

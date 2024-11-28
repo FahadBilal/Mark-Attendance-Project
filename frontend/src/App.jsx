@@ -1,12 +1,11 @@
 import Register from './SignUpPage'
 import './App.css'
 import './css/satoshi.css'
-import { Toaster } from 'react-hot-toast'
-
+import ToasterMessage from './global/Toaster.jsx'
 function App() {
   return (
     <>
-    <Toaster position="top-right" reverseOrder={false} />
+    <ToasterMessage/>
       <Register/>
     </>
   )
