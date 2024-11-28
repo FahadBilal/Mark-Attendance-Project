@@ -1,107 +1,99 @@
-import React from "react";
+import React, { useState } from "react";
 import Input from "../global/Input.jsx";
+import Select from "../global/Select.jsx";
+import Button from "../global/Button.jsx";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { apiurl } from "../global/Api.jsx";
+import toast from 'react-hot-toast'
 
 const Register = () => {
-  // const [fullName, setFullName] = useState('');
-  // const [email, setEmail] = useState('');
-  // const [otp, setOtp] = useState('');
-  // const [password, setPassword] = useState('');
-  // const [role, setRole] = useState('student');
-  // const [profileImage, setProfileImage] = useState(null);
-  // const [isOtpSent, setIsOtpSent] = useState(false);
-  // const [isEmailVerified, setIsEmailVerified] = useState(false);
-  // const [error, setError] = useState('');
-  // const [success, setSuccess] = useState('');
-
-  // // Function to request OTP
-  // const requestOtp = async () => {
-  //   try {
-  //     const response = await axios.post(`${apiurl}/users/requestOpt`, { email });
-  //     setIsOtpSent(true);
-  //     setError('');
-  //     setSuccess('OTP has been sent to your email');
-  //   } catch (error) {
-  //     setError('Error requesting OTP');
-  //   }
-  // };
-
-  // // Function to verify OTP
-  // const verifyOtp = async () => {
-  //   try {
-  //     await axios.post(`${apiurl}/users/verifyOpt`, { email, otp });
-  //     setIsEmailVerified(true);
-  //     setSuccess('Email verified successfully');
-  //     setError('');
-  //   } catch (error) {
-  //     setError('Invalid OTP or verification failed');
-  //   }
-  // };
-
-  // // Function to handle registration
-  // const handleRegister = async (e) => {
-  //   e.preventDefault();
-
-  //   if (!isEmailVerified) {
-  //     setError('Please verify your email before registering');
-  //     return;
-  //   }
-
-  //   const formData = new FormData();
-  //   formData.append('fullName', fullName);
-  //   formData.append('email', email);
-  //   formData.append('password', password);
-  //   formData.append('role', role);
-  //   if (profileImage) {
-  //     formData.append('profileImage', profileImage);
-  //   }
-
-  //   try {
-  //     const response = await axios.post(`${apiurl}/users/register`,formData, {
-  //       headers: { 'Content-Type': 'multipart/form-data' },
-  //     });
-  //     setSuccess(response.data.message);
-  //     setError('');
-  //   } catch (error) {
-  //     setError(error.response?.data?.message || 'Registration failed');
-  //   }
-  // };
-
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+  const [isOptSent, setIsOptSent] = useState(false);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+
+  const requestOpt = async (data) => {
+    try {
+      const response = await axios.post(`${apiurl}/users/requestOpt`, {
+        email: data.email,
+      });
+      console.log(response)
+      setIsOptSent(true)
+      toast.success(response.data.message)
+    } catch (error) {
+      toast.error()
+    }
+
+  };
+
+  const verifyOpt = async (data) => {
+    try {
+      const response = await axios.post(`${apiurl}/users/verifyOpt`, {
+        email: data.email,
+        opt: data.opt,
+      });
+      console.log(response)
+      setIsEmailVerified(true)
+      toast.success(response.data.message)
+    } catch (error) {
+      toast.error()
+    }
+  };
+
+  const onSubmit = async (data) => {
+    if(!isEmailVerified){
+      toast.error()
+      return;
+    }
+
+    const formData = {
+      fullName: data.fullName,
+      email: data.email,
+      role: data.role,
+      password: data.password,
+    };
+
+    if (data.profileImage && data.profileImage[0]) {
+      formData.profileImage = data.profileImage[0];
+    }
+
+    try {
+      const response = await axios.post(`${apiurl}/users/register`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log(response)
+      toast.success(response.data.message);
+    } catch (error) {
+      toast.error()
+    }
+
+  };
+
+
   return (
-    <div className="grid justify-items-center content-center  min-h-screen">
-      <div className=" w-full bg-blue-500 p-10  max-w-lg rounded-lg shadow-lg ">
+    <div className="grid justify-items-center content-center  min-h-screen px-2">
+      <div className=" w-full bg-pink-300 p-10  max-w-lg rounded-lg shadow-lg ">
         <h2 className="text-white font-satoshi font-extrabold text-2xl text-center mb-4">
           Register
         </h2>
-        <form onSubmit={handleSubmit}>
-          {/* FullName */}
-          <div>
-            <Input
-              label="FullName"
-              type="text"
-              placeholder="Enter your full name"
-              className={`${errors.name ? "border-red-500" : ""}`}
-              {...register("name", {
-                required: "FullName is required"
-              })}
-            />
-            {errors.name && (
-              <span className="text-red-500">{errors.name.message}</span>
-            )}
-          </div>
-
+        <form
+          onSubmit={handleSubmit(
+            isOptSent ? (isEmailVerified ? onSubmit : verifyOpt) : requestOpt
+          )}
+          encType="multipart/form-data"
+        >
           {/* Email */}
           <div>
             <Input
               label="Email"
               type="email"
               placeholder="Enter your Email"
-              className={`${errors.name ? "border-red-500" : ""}`}
+              className={`${errors.email ? "border-red-500" : ""}`}
               {...register("email", {
                 required: "Email is required",
                 pattern: {
@@ -116,53 +108,110 @@ const Register = () => {
           </div>
 
           {/* Opt */}
-          <div>
-            <Input
-              label="Opt"
-              type="text"
-              placeholder="Enter Opt"
-              className={`${errors.opt ? "border-red-500" : ""}`}
-              {...register("opt", {
-                required: "Opt is required"
-              })}
-            />
-            {errors.opt && (
-              <span className="text-red-500">{errors.opt.message}</span>
-            )}
-          </div>
-          
-          {/* Profile Image */}
-          <div>
-            <Input
-              label="Profile Image"
-              type="file"
-              className={`${errors.file ? "border-red-500" : ""}`}
-              {...register("file", {
-                required: "Profile Image is required"
-              })}
-            />
-            {errors.file && (
-              <span className="text-red-500">{errors.file.message}</span>
-            )}
-          </div>
+          {isOptSent && !isEmailVerified && (
+            <div>
+              <Input
+                label="Opt"
+                type="text"
+                placeholder="Enter Opt"
+                className={`${errors.opt ? "border-red-500" : ""}`}
+                {...register("opt", {
+                  required: "Opt is required",
+                })}
+              />
+              {errors.opt && (
+                <span className="text-red-500">{errors.opt.message}</span>
+              )}
+            </div>
+          )}
 
-          {/* Password */}
+          {/* EmailVerified */}
+          {isEmailVerified && (
+            <>
+              {/* FullName */}
+              <div>
+                <Input
+                  label="FullName"
+                  type="text"
+                  placeholder="Enter your Full name"
+                  className={`${errors.fullName ? "border-red-500" : ""}`}
+                  {...register("fullName", {
+                    required: "FullName is required",
+                  })}
+                />
+                {errors.fullName && (
+                  <span className="text-red-500">{errors.fullName .message}</span>
+                )}
+              </div>
+
+              {/* Profile Image */}
+              <div>
+                <Input
+                  label="Profile Image"
+                  type="file"
+                  className={`${errors.profileImage ? "border-red-500" : ""}`}
+                  {...register("profileImage", {
+                    required: "Profile Image is required",
+                  })}
+                />
+                {errors.profileImage && (
+                  <span className="text-red-500">
+                    {errors.profileImage.message}
+                  </span>
+                )}
+              </div>
+
+              {/* Role */}
+              <div>
+                <Select
+                  label="Role"
+                  options={["Student", "Admin"]}
+                  className={`${errors.role ? "border-red-500" : ""}`}
+                  {...register("role", {
+                    required: true,
+                  })}
+                />
+              </div>
+
+              {/* Password */}
+              <div>
+                <Input
+                  label="Password"
+                  type="password"
+                  placeholder="Enter your Password"
+                  className={`${errors.password ? "border-red-500" : ""}`}
+                  {...register("password", {
+                    required: "Password is required",
+                  })}
+                />
+                {errors.password && (
+                  <span className="text-red-500">
+                    {errors.paasword.message}
+                  </span>
+                )}
+              </div>
+            </>
+          )}
+
+          {/* Button */}
           <div>
-            <Input
-              label="Password"
-              type="password"
-              placeholder="Enter your Password"
-              className={`${errors.password ? "border-red-500" : ""}`}
-              {...register("password", {
-                required: "Password is required"
-              })}
-            />
-            {errors.password && (
-              <span className="text-red-500">{errors.paasword.message}</span>
-            )}
+            <Button
+              type="Submit"
+              className={`text-white  mt-8 transition-all duration-500 ${
+                isOptSent
+                  ? isEmailVerified
+                    ? "bg-green-500 hover:bg-green-600"
+                    : "bg-yellow-500 hover:bg-yellow-600"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
+            >
+              {isOptSent
+                ? isEmailVerified
+                  ? "Register"
+                  : "Verify OPT"
+                : "Send OPT"}
+            </Button>
           </div>
-
-
         </form>
       </div>
     </div>

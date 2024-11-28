@@ -35,7 +35,7 @@ const optRequest = asyncHandler(async (req, res) => {
   }
 
   const opt = Math.floor(100000 + Math.random() * 900000).toString();
-  // console.log(opt);
+  console.log(opt);
 
   const optExpiry = Date.now() + 5 * 60 * 1000;
 
@@ -104,7 +104,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(409, "User already existed");
   }
 
-  //console.log(req.file);
+  console.log(req.file);
 
   const profileImageLocalPath = req.file?.path;
   //console.log(profileImageLocalPath);
