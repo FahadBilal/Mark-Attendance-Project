@@ -5,7 +5,8 @@ import Button from "../global/Button.jsx";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { apiurl } from "../global/Api.jsx";
-import {toast} from 'react-hot-toast'
+import { toast } from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const {
@@ -22,13 +23,12 @@ const Register = () => {
       const response = await axios.post(`${apiurl}/users/requestOpt`, {
         email: data.email,
       });
-      console.log(response)
-      setIsOptSent(true)
-      toast.success(response.data.message)
+      console.log(response);
+      setIsOptSent(true);
+      toast.success(response.data.message);
     } catch (error) {
-      toast.error("Failed to send OTP. Please try again.")
+      toast.error("Failed to send OTP. Please try again.");
     }
-
   };
 
   const verifyOpt = async (data) => {
@@ -37,17 +37,17 @@ const Register = () => {
         email: data.email,
         opt: data.opt,
       });
-      console.log(response)
-      setIsEmailVerified(true)
-      toast.success(response.data.message)
+      console.log(response);
+      setIsEmailVerified(true);
+      toast.success(response.data.message);
     } catch (error) {
-      toast.error("Invalid OPT. Please try again.")
+      toast.error("Invalid OPT. Please try again.");
     }
   };
 
   const onSubmit = async (data) => {
-    if(!isEmailVerified){
-      toast.error("Please Verify Email before Registering.")
+    if (!isEmailVerified) {
+      toast.error("Please Verify Email before Registering.");
       return;
     }
 
@@ -66,21 +66,26 @@ const Register = () => {
       const response = await axios.post(`${apiurl}/users/register`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log(response)
+      console.log(response);
       toast.success(response.data.message);
     } catch (error) {
-      toast.error("Registration Failed. Please try again.")
+      toast.error("Registration Failed. Please try again.");
     }
-
   };
 
-
   return (
-    <div className="grid justify-items-center content-center  min-h-screen px-2">
-      <div className=" w-full bg-pink-300 p-10  max-w-lg rounded-lg shadow-lg ">
-        <h2 className="text-white font-satoshi font-extrabold text-2xl text-center mb-4">
+    <div className="grid justify-items-center content-center  min-h-screen px-2 bg-pink-500">
+      <div className=" w-full bg-white p-10  max-w-lg rounded-lg shadow-lg ">
+        <h2 className="text-pink-500 font-satoshi font-extrabold text-2xl text-center mb-4">
           Register
         </h2>
+        <p className="text-black font-poppins text-[14px] font-medium text-center mb-4">
+          Already a member?{" "}
+          <Link to={"/login"} className="text-pink-500 underline">
+            Login
+          </Link>
+        </p>
+
         <form
           onSubmit={handleSubmit(
             isOptSent ? (isEmailVerified ? onSubmit : verifyOpt) : requestOpt
@@ -140,7 +145,9 @@ const Register = () => {
                   })}
                 />
                 {errors.fullName && (
-                  <span className="text-red-500">{errors.fullName .message}</span>
+                  <span className="text-red-500">
+                    {errors.fullName.message}
+                  </span>
                 )}
               </div>
 
@@ -202,7 +209,7 @@ const Register = () => {
                   ? isEmailVerified
                     ? "bg-green-500 hover:bg-green-600"
                     : "bg-yellow-500 hover:bg-yellow-600"
-                  : "bg-blue-500 hover:bg-blue-600"
+                  : "bg-pink-500 hover:bg-pink-600"
               }`}
             >
               {isOptSent

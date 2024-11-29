@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { apiurl } from "../global/Api.jsx";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const {
@@ -29,11 +30,17 @@ const Login = () => {
     }
   };
   return (
-    <div className="grid justify-items-center content-center  min-h-screen px-2">
-      <div className=" w-full bg-pink-300 p-10  max-w-lg rounded-lg shadow-lg ">
-        <h2 className="text-white font-satoshi font-extrabold text-2xl text-center mb-4">
+    <div className="grid justify-items-center content-center  min-h-screen px-2 bg-pink-500">
+      <div className=" w-full bg-white p-10  max-w-lg rounded-lg shadow-lg ">
+        <h2 className="text-pink-500 font-satoshi font-extrabold text-2xl text-center mb-4">
           Login
         </h2>
+        <p className="text-black font-poppins text-[14px] font-medium text-center mb-4">
+          Not a member yet?{" "}
+          <Link to={"/register"} className="text-pink-500 underline">
+            Register
+          </Link>
+        </p>
         <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
           {/* Email */}
           <div>
@@ -75,7 +82,7 @@ const Login = () => {
           <div>
             <Button
               type="Submit"
-              className={`text-white  mt-8 transition-all duration-500 bg-blue-500 hover:bg-blue-600`}
+              className={`text-white  mt-8 transition-all duration-500 bg-pink-500 hover:bg-pink-600`}
             >
               {"Login"}
             </Button>
