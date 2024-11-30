@@ -7,6 +7,10 @@ import axios from "axios";
 import { apiurl } from "../global/Api.jsx";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { login, setLoading } from "../app/authSlice.js";
+import Loader from "../global/Loader.jsx";
 
 const Register = () => {
   const {
@@ -15,10 +19,17 @@ const Register = () => {
     formState: { errors },
   } = useForm();
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { loading } = useSelector((state) => state.loading);
+
   const [isOptSent, setIsOptSent] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
 
   const requestOpt = async (data) => {
+    dispatch(setLoading(true));
+
     try {
       const response = await axios.post(`${apiurl}/users/requestOpt`, {
         email: data.email,
@@ -28,10 +39,14 @@ const Register = () => {
       toast.success(response.data.message);
     } catch (error) {
       toast.error("Failed to send OTP. Please try again.");
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 
   const verifyOpt = async (data) => {
+    dispatch(setLoading(true));
+
     try {
       const response = await axios.post(`${apiurl}/users/verifyOpt`, {
         email: data.email,
@@ -42,10 +57,14 @@ const Register = () => {
       toast.success(response.data.message);
     } catch (error) {
       toast.error("Invalid OPT. Please try again.");
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 
   const onSubmit = async (data) => {
+    dispatch(setLoading(true));
+
     if (!isEmailVerified) {
       toast.error("Please Verify Email before Registering.");
       return;
@@ -66,12 +85,21 @@ const Register = () => {
       const response = await axios.post(`${apiurl}/users/register`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log(response);
+      //console.log(response);
       toast.success(response.data.message);
+      const userData = response.data.createdUser;
+      dispatch(login(userData));
+      navigate(userData.role === "admin" ? "/admin" : "/student");
     } catch (error) {
       toast.error("Registration Failed. Please try again.");
+    } finally {
+      dispatch(setLoading(false));
     }
   };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="grid justify-items-center content-center  min-h-screen px-2 bg-pink-500">

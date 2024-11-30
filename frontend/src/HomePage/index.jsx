@@ -36,11 +36,11 @@ const Home = () => {
       </nav>
 
       {/* heading */}
-      <div className="max-w-[1350px] mx-auto px-2 flex justify-center h-[calc(100vh-80px)] items-center">
+      <div className="max-w-[1350px] text-center mx-auto px-2 flex justify-center h-[calc(100vh-80px)] items-center">
         <h1
-        className="text-[100px] text-yellow-100 font-satoshi font-extrabold leading-10"
+        className="md:text-[100px] text-[60px] text-white font-satoshi font-extrabold md:leading-[90px] leading-[60px]"
         >
-          Attendance Mark
+          Mark Attendance
         </h1>
       </div>
     </div>

@@ -6,6 +6,10 @@ import { toast } from "react-hot-toast";
 import { apiurl } from "../global/Api.jsx";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { login, setLoading } from "../app/authSlice.js";
+import Loader from "../global/Loader.jsx";
 
 const Login = () => {
   const {
@@ -14,7 +18,14 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { loading } = useSelector((state) => state.loading);
+
   const onSubmit = async (data) => {
+    dispatch(setLoading(true));
+
     try {
       const response = await axios.post(
         `${apiurl}/users/login`,
@@ -23,12 +34,22 @@ const Login = () => {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-      console.log(response);
+      //console.log(response);
       toast.success(response.data.message);
+      const userData = response.data.user;
+      dispatch(login(userData));
+      navigate(userData.role === "admin" ? "/admin" : "/student");
     } catch (error) {
       toast.error("Login Failed. Please try again.");
+    } finally {
+      dispatch(setLoading(false));
     }
   };
+
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <div className="grid justify-items-center content-center  min-h-screen px-2 bg-pink-500">
       <div className=" w-full bg-white p-10  max-w-lg rounded-lg shadow-lg ">
