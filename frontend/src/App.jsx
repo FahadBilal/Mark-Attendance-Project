@@ -10,6 +10,7 @@ import Register from "./SignUpPage";
 import Login from "./LoginPage/Index.jsx";
 import AdminPage from "./adminPage/index.jsx";
 import UserPage from "./UserPage/index.jsx";
+import AuthLayout from "./global/AuthLayout.jsx";
 import "./App.css";
 import "./css/satoshi.css";
 
@@ -25,10 +26,26 @@ const MainApp = () => {
       <ToasterMessage />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/student" element={<UserPage />} />
-        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/register" element={
+          <AuthLayout authentication={false}>
+            <Register/>
+          </AuthLayout>
+        } />
+        <Route path="/login" element={
+          <AuthLayout authentication={false}>
+            <Login/>
+          </AuthLayout>
+        } />
+        <Route path="/student" element={
+          <AuthLayout authentication>
+            <UserPage/>
+          </AuthLayout>
+        } />
+        <Route path="/admin" element={
+          <AuthLayout authentication>
+            <AdminPage/>
+          </AuthLayout>
+        } />
       </Routes>
     </Router>
   );

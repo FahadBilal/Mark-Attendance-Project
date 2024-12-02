@@ -21,22 +21,25 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { loading } = useSelector((state) => state.loading);
+  const  loading  = useSelector((state) => state.loading);
 
   const onSubmit = async (data) => {
     dispatch(setLoading(true));
 
+    const formData = {
+      email: data.email,
+      password: data.password,
+    };
+
     try {
       const response = await axios.post(
-        `${apiurl}/users/login`,
-        { email: data.email, password: data.password },
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+        `${apiurl}/users/login`, formData
       );
-      //console.log(response);
+      console.log(response);
       toast.success(response.data.message);
-      const userData = response.data.user;
+      const userData = response.data.data;
+      console.log(userData);
+      
       dispatch(login(userData));
       navigate(userData.role === "admin" ? "/admin" : "/student");
     } catch (error) {
@@ -47,7 +50,7 @@ const Login = () => {
   };
 
   if (loading) {
-    return <Loader />;
+    return <Loader/>;
   }
 
   return (

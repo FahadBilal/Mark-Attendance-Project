@@ -8,17 +8,17 @@ const AuthLayout = ({ children, authentication = true }) => {
   const navigate = useNavigate();
   const [loading, setLoading]=useState(true)
 
-  const authStatus = useSelector((state) => state.status);
+  const user = useSelector((state) => state.user);
 
   useEffect(()=>{
-    // if (authentication && authStatus !== authentication) {
-    //     navigate("/login");
-    //   } else if (!authentication && authStatus !== authentication) {
-    //     navigate("/");
-    //   }
+    if (authentication && !user) {
+        navigate("/login");
+      }else if(user){
+        navigate(user.role==="admin"?"/admin":"/student");
+      }
       setLoading(false);
   },
-  [navigate,authentication,authStatus])
+  [navigate,authentication,user])
   
 
   return loading? <Loader/>:<>{children}</>

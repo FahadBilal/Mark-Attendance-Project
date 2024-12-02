@@ -22,7 +22,7 @@ const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { loading } = useSelector((state) => state.loading);
+  const  loading  = useSelector((state) => state.loading);
 
   const [isOptSent, setIsOptSent] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
@@ -85,11 +85,9 @@ const Register = () => {
       const response = await axios.post(`${apiurl}/users/register`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      //console.log(response);
+      console.log(response);
       toast.success(response.data.message);
-      const userData = response.data.createdUser;
-      dispatch(login(userData));
-      navigate(userData.role === "admin" ? "/admin" : "/student");
+      navigate("/login");
     } catch (error) {
       toast.error("Registration Failed. Please try again.");
     } finally {
@@ -98,7 +96,7 @@ const Register = () => {
   };
 
   if (loading) {
-    return <Loader />;
+    return <Loader/>;
   }
 
   return (

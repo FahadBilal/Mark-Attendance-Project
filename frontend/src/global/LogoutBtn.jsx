@@ -11,7 +11,7 @@ const Logout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { loading } = useSelector((state) => state.loading);
+  const  loading  = useSelector((state) => state.loading);
 
   const onSubmit = async () => {
     dispatch(setLoading(true));
