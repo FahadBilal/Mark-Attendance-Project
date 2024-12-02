@@ -29,7 +29,7 @@ const authSlice = createSlice({
       state.loading = false;
 
       // Save user and session time to localStorage
-      localStorage.setItem("user", JSON.stringify(action.payload.user));
+      localStorage.setItem("user", JSON.stringify(action.payload));
       localStorage.setItem("localTime", Date.now());
     },
 
@@ -48,7 +48,7 @@ const authSlice = createSlice({
 
     createSession: (state) => {
       const localTime = localStorage.getItem("localTime");
-      const sessionTime = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
+      const sessionTime = 1 * 60 * 60 * 100; // 2 hours in milliseconds
       const currentTime = Date.now();
 
       if (localTime && currentTime - localTime > sessionTime) {
