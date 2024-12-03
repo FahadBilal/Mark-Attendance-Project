@@ -412,7 +412,7 @@ const viewAttendanceRecord = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         { attendanceRecord },
-        "Attendance Record Successfully"
+        "Attendance Record Fetched Successfully"
       )
     );
 });

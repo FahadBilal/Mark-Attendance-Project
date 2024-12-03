@@ -12,11 +12,16 @@ import AdminPage from "./adminPage/index.jsx";
 import UserPage from "./UserPage/index.jsx";
 import AuthLayout from "./global/AuthLayout.jsx";
 import LeaveRequest from "./UserPage/LeaveRequest.jsx";
+import AttendanceRecord from "./UserPage/AttendanceRecord.jsx";
 import "./App.css";
 import "./css/satoshi.css";
 
 const MainApp = () => {
   const dispatch = useDispatch();
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    const userRoute = user?.role==="admin"?"/admin":"student"
 
   useEffect(() => {
     dispatch(createSession());
@@ -47,9 +52,14 @@ const MainApp = () => {
             <AdminPage/>
           </AuthLayout>
         } />
-        <Route path="/leaveRequest" element={
+        <Route path="/student/leaveRequest" element={
           <AuthLayout authentication>
             <LeaveRequest/>
+          </AuthLayout>
+        }/>
+        <Route path="/student/attendanceRecord" element={
+          <AuthLayout authentication>
+            <AttendanceRecord/>
           </AuthLayout>
         }/>
       </Routes>

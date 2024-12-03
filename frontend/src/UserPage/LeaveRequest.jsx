@@ -47,7 +47,7 @@ const LeaveRequest = () => {
       toast.success(response.data.message);
       const leave = response.data.data;
       console.log(leave);
-      JSON.stringify(localStorage.setItem("leaveRequest", response.data.data));
+      localStorage.setItem("leaveRequest", JSON.stringify(response.data.data));
 
       navigate("/student");
     } catch (error) {

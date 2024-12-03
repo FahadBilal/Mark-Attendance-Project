@@ -46,7 +46,7 @@ const UserPage = () => {
             </h2>
             <div className="w-full p-6 bg-white rounded-xl">
               <Link 
-              to={"/leaveRequest"}
+              to={"/student/leaveRequest"}
               >
               <Button
                 className={`bg-green-500 hover:bg-green-600 text-white transition-all duration-300`}
