@@ -3,6 +3,7 @@ import Logout from "../global/LogoutBtn";
 import MarkAttendance from "./MarkAttendance.jsx";
 import Button from "../global/Button.jsx";
 import ViewAttendanceRecord from "./ViewAttendanceRecord.jsx";
+import { Link } from "react-router-dom";
 
 const UserPage = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -30,7 +31,7 @@ const UserPage = () => {
         </div>
 
         {/* Grid */}
-        <div className="mt-40 sm:p-6 p-2 grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 sm:gap-8 gap-10">
+        <div className="mt-20 sm:p-6 p-2 grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 sm:gap-8 gap-10">
           {/* Mark Attendance */}
           <div>
             <h2 className="text-center text-2xl font-satoshi font-bold sm:mb-6 mb-3 text-white">
@@ -44,11 +45,15 @@ const UserPage = () => {
               Leave Request
             </h2>
             <div className="w-full p-6 bg-white rounded-xl">
+              <Link 
+              to={"/leaveRequest"}
+              >
               <Button
                 className={`bg-green-500 hover:bg-green-600 text-white transition-all duration-300`}
               >
                 {"Request"}
               </Button>
+              </Link>
             </div>
           </div>
           {/* Attendance Record */}

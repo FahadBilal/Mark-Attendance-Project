@@ -11,6 +11,7 @@ import Login from "./LoginPage/Index.jsx";
 import AdminPage from "./adminPage/index.jsx";
 import UserPage from "./UserPage/index.jsx";
 import AuthLayout from "./global/AuthLayout.jsx";
+import LeaveRequest from "./UserPage/LeaveRequest.jsx";
 import "./App.css";
 import "./css/satoshi.css";
 
@@ -46,6 +47,11 @@ const MainApp = () => {
             <AdminPage/>
           </AuthLayout>
         } />
+        <Route path="/leaveRequest" element={
+          <AuthLayout authentication>
+            <LeaveRequest/>
+          </AuthLayout>
+        }/>
       </Routes>
     </Router>
   );

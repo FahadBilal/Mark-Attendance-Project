@@ -20,8 +20,7 @@ const MarkAttendance = () => {
     const today = new Date().toISOString().split("T")[0];
 
     if (attendanceDate === today) {
-      toast.error("Attendance is already Marked");
-      setIsMarked(true);
+        setIsMarked(true);
     }
   }, []);
 
@@ -49,7 +48,7 @@ const MarkAttendance = () => {
       toast.success(response.data.message);
       setIsMarked(true);
     } catch (error) {
-      toast.error("Failed to mark Attendance");
+        toast.error("Attendance is already Marked");
     } finally {
       dispatch(setLoading(false));
     }
@@ -65,7 +64,7 @@ const MarkAttendance = () => {
         onClick={markAttendance}
         disabled={isMarked}
         className={`bg-green-500 hover:bg-green-600 text-white transition-all duration-300 ${
-          isMarked ? "opacity-50 cursor-not-allowed" : ""
+          isMarked ? "cursor-not-allowed bg-opacity-50 hover:bg-opacity-50 " : ""
         }`}
       >
         {`${isMarked ? "Attendance Marked" : "Mark Attendance"}`}
