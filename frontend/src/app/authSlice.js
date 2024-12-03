@@ -48,7 +48,7 @@ const authSlice = createSlice({
 
     createSession: (state) => {
       const localTime = localStorage.getItem("localTime");
-      const sessionTime = 1 * 60 * 60 * 100; // 2 hours in milliseconds
+      const sessionTime = 5 * 60 * 60 * 1000; // 2 hours in milliseconds
       const currentTime = Date.now();
 
       if (localTime && currentTime - localTime > sessionTime) {

@@ -9,7 +9,7 @@ import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { login, setLoading } from "../app/authSlice.js";
+import { setLoading } from "../app/authSlice.js";
 import Loader from "../global/Loader.jsx";
 
 const Register = () => {
