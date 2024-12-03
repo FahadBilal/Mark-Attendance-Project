@@ -9,33 +9,32 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setLoading } from "../app/authSlice.js";
 import Loader from "../global/Loader.jsx";
-import Textarea from "../global/Textarea.jsx";
 
-const LeaveRequest = () => {
+const ChangedPassword = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
+  const user = JSON.parse(localStorage.getItem("user"));
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const loading = useSelector((state) => state.loading);
 
-  const user = JSON.parse(localStorage.getItem("user"));
-
   const onSubmit = async (data) => {
     dispatch(setLoading(true));
 
     const formData = {
-      leaveDate: data.date,
-      reason: data.reason,
+      oldPassword: data.oldPassword,
+      newPassword: data.newPassword,
     };
 
     try {
-      const response = await axios.post(
-        `${apiurl}/users/submitLeaveRequest`,
+      const response = await axios.patch(
+        `${apiurl}/users/change-password`,
         formData,
         {
           headers: {
@@ -45,13 +44,11 @@ const LeaveRequest = () => {
       );
       console.log(response);
       toast.success(response.data.message);
-      const leave = response.data.data;
-      console.log(leave);
-      localStorage.setItem("leaveRequest", JSON.stringify(response.data.data));
-
+      const userData = response.data.data;
+      console.log(userData);
       navigate("/student");
     } catch (error) {
-      toast.error("Leave Request Submiited Failed");
+      toast.error("Password Changed Failed");
     } finally {
       dispatch(setLoading(false));
     }
@@ -65,38 +62,37 @@ const LeaveRequest = () => {
     <div className="grid justify-items-center content-center  min-h-screen px-2 bg-pink-500">
       <div className=" w-full bg-white p-10  max-w-lg rounded-lg shadow-lg ">
         <h2 className="text-green-500 font-satoshi font-extrabold text-2xl text-center mb-4">
-          Leave Request
+          Change Password
         </h2>
         <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
-          {/* date */}
+          {/* New Password */}
           <div>
             <Input
-              label="Date"
-              type="date"
-              placeholder="Enter your Email"
-              className={`${errors.email ? "border-red-500" : ""}`}
-              {...register("date", {
-                required: "Date is required",
+              label="Old Password"
+              type="password"
+              placeholder="Enter your Old Password"
+              className={`${errors.oldPassword ? "border-red-500" : ""}`}
+              {...register("oldPassword", {
+                required: "Old Password is required",
               })}
             />
-            {errors.date && (
-              <span className="text-red-500">{errors.date.message}</span>
+            {errors.oldPassword && (
+              <span className="text-red-500">{errors.oldPassword.message}</span>
             )}
           </div>
-
-          {/* Reason */}
-
+          {/* New Password */}
           <div>
-            <Textarea
-              label="Reason"
-              placeholder="Enter your Reason..."
-              className={`${errors.reason ? "border-red-500" : ""}`}
-              {...register("reason", {
-                required: "Reason is Required",
+            <Input
+              label=" New Password"
+              type="password"
+              placeholder="Enter your New Password"
+              className={`${errors.newPassword ? "border-red-500" : ""}`}
+              {...register("newPassword", {
+                required: "New Password is required",
               })}
             />
-            {errors.reason && (
-              <span className="text-red-500">{errors.reason.message}</span>
+            {errors.newPassword && (
+              <span className="text-red-500">{errors.newPassword.message}</span>
             )}
           </div>
 
@@ -106,7 +102,7 @@ const LeaveRequest = () => {
               type="Submit"
               className={`text-white  mt-8 transition-all duration-500 bg-green-500 hover:bg-green-600`}
             >
-              {"Submit Leave Request"}
+              {"Update Password"}
             </Button>
           </div>
         </form>
@@ -115,4 +111,4 @@ const LeaveRequest = () => {
   );
 };
 
-export default LeaveRequest;
+export default ChangedPassword;

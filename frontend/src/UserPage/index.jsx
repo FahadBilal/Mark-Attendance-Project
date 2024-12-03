@@ -45,14 +45,12 @@ const UserPage = () => {
               Leave Request
             </h2>
             <div className="w-full p-6 bg-white rounded-xl">
-              <Link 
-              to={"/student/leaveRequest"}
-              >
-              <Button
-                className={`bg-green-500 hover:bg-green-600 text-white transition-all duration-300`}
-              >
-                {"Request"}
-              </Button>
+              <Link to={"/student/leaveRequest"}>
+                <Button
+                  className={`bg-green-500 hover:bg-green-600 text-white transition-all duration-300`}
+                >
+                  {"Request"}
+                </Button>
               </Link>
             </div>
           </div>
@@ -61,8 +59,15 @@ const UserPage = () => {
             <h2 className="text-center text-2xl font-satoshi font-bold sm:mb-6 mb-3 text-white">
               Attendance Record
             </h2>
-            <ViewAttendanceRecord/>
+            <ViewAttendanceRecord />
           </div>
+        </div>
+        <div className="mt-10 absolute right-10 bottom-10">
+          <Link to={"/student/changePassword"}>
+            <p className="text-white underline font-poppins text-[16px] font-medium hover:text-red-200">
+              Change Password
+            </p>
+          </Link>
         </div>
       </div>
     </>
