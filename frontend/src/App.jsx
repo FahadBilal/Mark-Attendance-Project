@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { PersistGate } from "redux-persist/integration/react";
 import { Provider, useDispatch } from "react-redux";
 import { store, persistor } from "./app/store.js";
-import { createSession } from "./app/authSlice.js";
 import ToasterMessage from "./global/Toaster.jsx";
 import Home from "./HomePage/index.jsx";
 import Register from "./SignUpPage";
@@ -18,15 +17,7 @@ import "./App.css";
 import "./css/satoshi.css";
 
 const MainApp = () => {
-  const dispatch = useDispatch();
-
-  const user = JSON.parse(localStorage.getItem("user"));
-
-  const userRoute = user?.role === "admin" ? "/admin" : "student";
-
-  useEffect(() => {
-    dispatch(createSession());
-  }, [dispatch]);
+ ;
 
   return (
     <Router>

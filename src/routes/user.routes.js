@@ -33,7 +33,7 @@ router.route("/change-password").patch(verifyJwt, changeCurrentPassword);
 
 router
   .route("/update-profile-Image")
-  .patch(verifyJwt, upload.single("profileImage"), updateProfileImage);
+  .post(verifyJwt, upload.single("profileImage"), updateProfileImage);
 
 router.route("/mark-attendance").post(verifyJwt, markAttendance);
 

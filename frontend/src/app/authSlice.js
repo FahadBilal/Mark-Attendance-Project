@@ -46,26 +46,9 @@ const authSlice = createSlice({
       state.loading = action.payload;
     },
 
-    createSession: (state) => {
-      const localTime = localStorage.getItem("localTime");
-      const sessionTime = 5 * 60 * 60 * 1000; // 2 hours in milliseconds
-      const currentTime = Date.now();
-
-      if (localTime && currentTime - localTime > sessionTime) {
-        state.user = null;
-        state.status = false;
-
-        // Clear expired session
-        localStorage.removeItem("user");
-        localStorage.removeItem("localTime");
-
-        // Notify user
-        toast.error("Your session has expired. Please log in again.");
-      }
-    },
   },
 });
 
-export const { login, logout, setLoading, createSession } = authSlice.actions;
+export const { login, logout, setLoading } = authSlice.actions;
 
 export default authSlice.reducer;
