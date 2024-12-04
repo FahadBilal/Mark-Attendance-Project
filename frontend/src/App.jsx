@@ -9,7 +9,7 @@ import Register from "./SignUpPage";
 import Login from "./LoginPage/Index.jsx";
 import AdminPage from "./adminPage/index.jsx";
 import UserPage from "./UserPage/index.jsx";
-import AuthLayout from "./global/AuthLayout.jsx";
+import ProtectedRoute from './global/AuthLayout.jsx'
 import LeaveRequest from "./UserPage/LeaveRequest.jsx";
 import AttendanceRecord from "./UserPage/AttendanceRecord.jsx";
 import ChangedPassword from "./UserPage/ChangedPassword.jsx";
@@ -26,58 +26,50 @@ const MainApp = () => {
         <Route path="/" element={<Home />} />
         <Route
           path="/register"
-          element={
-            <AuthLayout authentication={false}>
-              <Register />
-            </AuthLayout>
-          }
+          element={<Register/>}
         />
         <Route
           path="/login"
-          element={
-            <AuthLayout authentication={false}>
-              <Login />
-            </AuthLayout>
-          }
+          element={<Login/>}
         />
         <Route
           path="/student"
           element={
-            <AuthLayout authentication>
+            <ProtectedRoute role="student">
               <UserPage />
-            </AuthLayout>
+            </ProtectedRoute>
           }
         />
         <Route
           path="/admin"
           element={
-            <AuthLayout authentication>
+            <ProtectedRoute role="admin">
               <AdminPage />
-            </AuthLayout>
+            </ProtectedRoute>
           }
         />
         <Route
           path="/student/leaveRequest"
           element={
-            <AuthLayout authentication>
+            <ProtectedRoute role="student">
               <LeaveRequest />
-            </AuthLayout>
+            </ProtectedRoute>
           }
         />
         <Route
           path="/student/attendanceRecord"
           element={
-            <AuthLayout authentication>
+            <ProtectedRoute role="student">
               <AttendanceRecord />
-            </AuthLayout>
+            </ProtectedRoute>
           }
         />
         <Route
           path="/student/changePassword"
           element={
-            <AuthLayout authentication>
+            <ProtectedRoute role="student">
               <ChangedPassword />
-            </AuthLayout>
+            </ProtectedRoute>
           }
         />
       </Routes>

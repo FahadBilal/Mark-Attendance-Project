@@ -1,27 +1,34 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { Navigate } from "react-router-dom";
 import Loader from "./Loader";
+import { useEffect } from "react";
 
-const AuthLayout = ({ children, authentication = true }) => {
-  const navigate = useNavigate();
-  const [loading, setLoading]=useState(true)
+const ProtectedRoute = ({ children, role = "student" }) => {
+  const [loading, setLoading] = React.useState(true);
+  const user = JSON.parse(localStorage.getItem("user"))
 
-  const user = useSelector((state) => state.user);
+  useEffect(() => {
+    // Simulate loading for role validation
+    const timer = setTimeout(() => setLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, []);
 
-  useEffect(()=>{
-    if (authentication && !user) {
-        navigate("/login");
-      }else if(user){
-        navigate(user.role==="admin"?"/admin":"/student");
-      }
-      setLoading(false);
-  },
-  [navigate,authentication,user])
-  
+  if (loading) {
+    return <Loader />;
+  }
 
-  return loading? <Loader/>:<>{children}</>
+  if (!user) {
+    // If user is not logged in, redirect to login page
+    return <Navigate to="/login" />;
+  }
+
+  if (user.user.role !== role) {
+    // If user role doesn't match, redirect to unauthorized page or dashboard
+    return <Navigate to={`/${user.user.role}`} />;
+  }
+
+  // Render children if all checks pass
+  return children;
 };
 
-export default AuthLayout;
+export default ProtectedRoute;

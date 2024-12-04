@@ -322,7 +322,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 const updateProfileImage = asyncHandler(async (req, res) => {
   console.log(req.file)
   const profileImageLocalPath = req.file?.path;
-  console.log(profileImageLocalPath);
+  // console.log(profileImageLocalPath);
 
   if (!profileImageLocalPath) {
     throw new ApiError(400, "Profile Image is missing");
