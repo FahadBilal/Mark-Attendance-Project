@@ -3,6 +3,7 @@ import Logout from "../global/LogoutBtn";
 import { Link } from "react-router-dom";
 import ChangeProfile from "../UserPage/ChangeProfile";
 import AllUser from "./AllUser.jsx";
+import AllAttendance from "./AllAtendaces.jsx";
 
 const AdminPage = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -43,9 +44,9 @@ const AdminPage = () => {
           {/* Attendance Record */}
           <div>
             <h2 className="text-center text-2xl font-satoshi font-bold sm:mb-6 mb-3 text-white">
-              Attendance Record
+              All Attendance Records
             </h2>
-            <AllUser/>
+            <AllAttendance/>
           </div>
         </div>
 

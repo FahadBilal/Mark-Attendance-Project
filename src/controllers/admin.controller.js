@@ -39,7 +39,7 @@ const getAllAttendances = asyncHandler(async (_, res) => {
   return res
     .status(200)
     .json(
-      new ApiResponse(200, { attendanceRecord }, "Record Fetched Successfully")
+      new ApiResponse(200, { attendanceRecord }, "All Attendance Record Fetched Successfully")
     );
 });
 
