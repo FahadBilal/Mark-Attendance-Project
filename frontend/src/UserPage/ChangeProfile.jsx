@@ -1,10 +1,9 @@
 import React, { useRef, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setLoading } from "../app/authSlice.js";
-import Loader from "../global/Loader.jsx";
 import { FaCamera } from "react-icons/fa";
 import { apiurl } from "../global/Api.jsx";
 
@@ -13,7 +12,6 @@ const ChangeProfile = ({ className }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const loading = useSelector((state) => state.loading);
   const user = JSON.parse(localStorage.getItem("user"));
 
   // Handle file selection
@@ -79,10 +77,6 @@ const ChangeProfile = ({ className }) => {
       dispatch(setLoading(false));
     }
   };
-
-  if (loading) {
-    return <Loader />;
-  }
 
   return (
     <div className={`${className}`}>

@@ -8,7 +8,7 @@ const ShowAllAttendance = () => {
     <div className="min-h-screen bg-red-500 sm:px-32 px-2 py-20 flex justify-center">
       <div className="bg-white sm:p-8 p-2 w-full rounded-lg shadow">
         <h2 className="text-3xl font-satoshi font-extrabold text-red-500 text-center mb-8">
-          All User's Record
+          All Attendance Records
         </h2>
         {attendanceRecord.length === 0 ? (
           <p className="text-xl font-poppins font-bold text-center text-black">

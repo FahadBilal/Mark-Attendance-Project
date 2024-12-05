@@ -47,10 +47,6 @@ const AllAttendance = () => {
     }
   };
 
-  if (loading) {
-    return <Loader />;
-  }
-
 
   return (
     <div className="w-full p-6  bg-white rounded-xl">

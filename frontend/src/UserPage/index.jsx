@@ -5,9 +5,17 @@ import Button from "../global/Button.jsx";
 import ViewAttendanceRecord from "./ViewAttendanceRecord.jsx";
 import { Link } from "react-router-dom";
 import ChangeProfile from "./ChangeProfile.jsx";
+import Loader from "../global/Loader.jsx";
+import { useSelector } from "react-redux";
+
 
 const UserPage = () => {
   const user = JSON.parse(localStorage.getItem("user"));
+  const loading = useSelector((state) => state.loading);
+
+  if(loading){
+    return <Loader/>
+  }
 
   return (
     <>

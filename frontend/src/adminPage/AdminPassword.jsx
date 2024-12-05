@@ -55,7 +55,7 @@ const AdminPassword = () => {
   };
 
   if (loading) {
-    return <Loader />;
+    return <Loader className={`bg-red-500`}/>;
   }
 
   return (

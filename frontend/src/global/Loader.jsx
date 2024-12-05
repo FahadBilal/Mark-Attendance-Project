@@ -1,9 +1,9 @@
 import React from "react";
 import { Player } from "@lottiefiles/react-lottie-player";
 import animationData from '../assets/Animation - 1732984540426.json'
-const Loader = () => {
+const Loader = ({className}) => {
   return (
-    <div className="flex justify-center items-center min-h-screen w-full bg-transparent z-50">
+    <div className={`flex justify-center items-center min-h-screen w-full bg-pink-500 z-50 ${className}`}>
       <Player
         autoplay
         loop

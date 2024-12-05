@@ -4,9 +4,16 @@ import { Link } from "react-router-dom";
 import ChangeProfile from "../UserPage/ChangeProfile";
 import AllUser from "./AllUser.jsx";
 import AllAttendance from "./AllAtendaces.jsx";
+import Loader from "../global/Loader.jsx";
+import { useSelector } from "react-redux";
 
 const AdminPage = () => {
+  const loading = useSelector((state) => state.loading);
   const user = JSON.parse(localStorage.getItem("user"));
+
+  if (loading) {
+    return <Loader className={`bg-red-500`}/>;
+  }
 
   return (
     <>
@@ -19,7 +26,7 @@ const AdminPage = () => {
             <h4 className="font-satoshi sm:text-2xl text-xl  text-black font-bold">
               {user.user.fullName}
             </h4>
-            <Logout className={`hover:bg-red-600`}/>
+            <Logout className={`hover:bg-red-600`} />
           </div>
         </div>
         {/* ProfileImage */}
@@ -46,7 +53,7 @@ const AdminPage = () => {
             <h2 className="text-center text-2xl font-satoshi font-bold sm:mb-6 mb-3 text-white">
               All Attendance Records
             </h2>
-            <AllAttendance/>
+            <AllAttendance />
           </div>
         </div>
 

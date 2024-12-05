@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
 import { setLoading } from "../app/authSlice";
 import { apiurl } from "../global/Api.jsx";
 import axios from "axios";
 import Button from "../global/Button.jsx";
-import Loader from "../global/Loader.jsx";
-
 const MarkAttendance = () => {
   const [isMarked, setIsMarked] = useState(false);
 
-  const loading = useSelector((state) => state.loading);
   const dispatch = useDispatch();
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -54,10 +51,7 @@ const MarkAttendance = () => {
     }
   };
 
-  if (loading) {
-    <Loader />;
-    return;
-  }
+ 
   return (
     <div className="w-full p-6 bg-white rounded-xl">
       <Button
