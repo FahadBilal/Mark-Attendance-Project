@@ -64,6 +64,8 @@ const UserPage = () => {
             <ViewAttendanceRecord />
           </div>
         </div>
+
+        {/* ChangePassword */}
         <div className="mt-10 absolute right-10 sm:bottom-10 bottom-5">
           <Link to={"/student/changePassword"}>
             <p className="text-white underline font-poppins text-[16px] font-medium hover:text-green-500">

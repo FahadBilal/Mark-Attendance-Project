@@ -9,43 +9,28 @@ import Register from "./SignUpPage";
 import Login from "./LoginPage/Index.jsx";
 import AdminPage from "./adminPage/index.jsx";
 import UserPage from "./UserPage/index.jsx";
-import ProtectedRoute from './global/AuthLayout.jsx'
+import ProtectedRoute from "./global/AuthLayout.jsx";
 import LeaveRequest from "./UserPage/LeaveRequest.jsx";
 import AttendanceRecord from "./UserPage/AttendanceRecord.jsx";
 import ChangedPassword from "./UserPage/ChangedPassword.jsx";
-import  AdminPassword from './adminPage/AdminPassword.jsx'
+import AdminPassword from "./adminPage/AdminPassword.jsx";
+import ShowAllUser from "./adminPage/ShowAllUser.jsx";
 import "./App.css";
 import "./css/satoshi.css";
 
 const MainApp = () => {
- ;
-
   return (
     <Router>
       <ToasterMessage />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route
-          path="/register"
-          element={<Register/>}
-        />
-        <Route
-          path="/login"
-          element={<Login/>}
-        />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
         <Route
           path="/student"
           element={
             <ProtectedRoute role="student">
               <UserPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute role="admin">
-              <AdminPage />
             </ProtectedRoute>
           }
         />
@@ -73,11 +58,27 @@ const MainApp = () => {
             </ProtectedRoute>
           }
         />
-         <Route
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/admin/changePassword"
           element={
             <ProtectedRoute role="admin">
               <AdminPassword />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/showAllUser"
+          element={
+            <ProtectedRoute role="admin">
+              <ShowAllUser />
             </ProtectedRoute>
           }
         />

@@ -5,54 +5,63 @@ import { apiurl } from "../global/Api.jsx";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logout, setLoading } from "../app/authSlice.js";
+import { setLoading } from "../app/authSlice.js";
+import Loader from "../global/Loader.jsx";
 
-const Logout = ({className}) => {
+const AllUser = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const loading = useSelector((state) => state.loading);
 
   const user = JSON.parse(localStorage.getItem("user"));
 
+
   const onSubmit = async () => {
-    if(!user?.accessToken){
+    if (!user?.accessToken) {
       toast.error("You are not logged In");
       return;
     }
     dispatch(setLoading(true));
 
     try {
-      const response = await axios.post(
-        `${apiurl}/users/logout`,
-        {},
+      const response = await axios.get(
+        `${apiurl}/admin/allUsers`,
         {
-          headers:{
-            Authorization:`Bearer ${user.accessToken}`
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`,
           },
         }
       );
       //console.log(response);
-      dispatch(logout());
       toast.success(response.data.message);
-      navigate("/login");
+      localStorage.setItem(
+        "allUser",
+        JSON.stringify(response.data.data)
+      );
+       navigate("/admin/showAllUser");
     } catch (error) {
-      toast.error("Logout Failed. Please try again.");
+      toast.error("All Users Fetched Failed");
     } finally {
       dispatch(setLoading(false));
     }
   };
 
+  if (loading) {
+    return <Loader />;
+  }
+
+
   return (
-    <div>
+    <div className="w-full p-6  bg-white rounded-xl">
       <Button
-        type="Submit"
+        className={`bg-emerald-500 hover:bg-emerald-600 text-white transition-all duration-300`}
         onClick={onSubmit}
-        className={`text-black  transition-all duration-500  hover:bg-pink-500 hover:text-white ${className}`}
       >
-        {"Logout"}
+        {"Users"}
       </Button>
     </div>
   );
 };
 
-export default Logout;
+export default AllUser;

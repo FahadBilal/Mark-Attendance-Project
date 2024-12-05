@@ -12,8 +12,8 @@ const AttendanceRecord = () => {
         (
             <p className='text-xl font-poppins font-bold text-center text-black'>No attendance records available.</p>
         ):(
-            <table className='table-auto border-collapse w-full max-w-4xl mx-auto shadow-md bg-pink-500 rounded-lg'>
-                <thead>
+            <table className='table-auto border-collapse w-full max-w-4xl mx-auto shadow-md bg-gray-400 rounded-lg'>
+                <thead className='bg-gray-500'>
                     <tr>
                         <th className='font-poppins text-xl font-bold px-4 py-2 border border-white text-white'>Date</th>
                         <th className='font-poppins text-xl font-bold px-4 py-2 border border-white text-white'>Status</th>

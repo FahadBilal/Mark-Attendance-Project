@@ -59,9 +59,9 @@ const AdminPassword = () => {
   }
 
   return (
-    <div className="grid justify-items-center content-center  min-h-screen px-2 bg-pink-500">
+    <div className="grid justify-items-center content-center  min-h-screen px-2 bg-red-500">
       <div className=" w-full bg-white p-10  max-w-lg rounded-lg shadow-lg ">
-        <h2 className="text-green-500 font-satoshi font-extrabold text-2xl text-center mb-4">
+        <h2 className="text-emerald-500 font-satoshi font-extrabold text-2xl text-center mb-4">
           Change Password
         </h2>
         <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
@@ -100,7 +100,7 @@ const AdminPassword = () => {
           <div>
             <Button
               type="Submit"
-              className={`text-white  mt-8 transition-all duration-500 bg-green-500 hover:bg-green-600`}
+              className={`text-white  mt-8 transition-all duration-500 bg-emerald-500 hover:bg-emerald-600-600`}
             >
               {"Update Password"}
             </Button>
