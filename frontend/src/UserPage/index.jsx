@@ -23,13 +23,13 @@ const UserPage = () => {
             <Logout />
           </div>
         </div>
-        <div className="w-48 h-48 mt-8 mx-auto relative">
+        <div className="w-48 h-48 mt-8  rounded-full mx-auto relative">
           <img
             src={user.user.profileImage}
             alt="UserImage"
-            className="object-cover rounded-full w-full  "
+            className="object-cover object-center w-full rounded-full "
           />
-          <ChangeProfile className="absolute bottom-0 right-8"/>
+          <ChangeProfile className="absolute bottom-0 right-0"/>
         </div>
 
         {/* Grid */}

@@ -6,13 +6,11 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout, setLoading } from "../app/authSlice.js";
-import Loader from "../global/Loader.jsx";
 
 const Logout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const loading = useSelector((state) => state.loading);
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -43,10 +41,6 @@ const Logout = () => {
       dispatch(setLoading(false));
     }
   };
-
-  if (loading) {
-    return <Loader />;
-  }
 
   return (
     <div>

@@ -21,9 +21,9 @@ const ChangeProfile = ({ className }) => {
     const file = e.target.files[0];
     if (file) {
       setSelectedFile(file); // Save the file to state
-      console.log("File selected:", file);
+      // console.log("File selected:", file);
       // Automatically submit the form after file selection
-      onSubmit(e); 
+      onSubmit(e);
     } else {
       setSelectedFile(null); // No file selected
       console.error("No file selected");
@@ -34,17 +34,17 @@ const ChangeProfile = ({ className }) => {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    if(!selectedFile){
-      toast.error("File Selected before submitting")
+    if (!selectedFile) {
+      toast.error("File Selected before submitting");
     }
 
     const formData = new FormData();
     formData.append("profileImage", selectedFile);
 
     // Log FormData contents manually
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]); // Logs the field name and its value (file)
-    }
+    // for (let pair of formData.entries()) {
+    //   console.log(pair[0], pair[1]); // Logs the field name and its value (file)
+    // }
 
     dispatch(setLoading(true));
 
@@ -59,12 +59,21 @@ const ChangeProfile = ({ className }) => {
           },
         }
       );
-      console.log("Response:", response);
+      // console.log("Response:", response);
       toast.success(response.data.message);
       localStorage.setItem("user", JSON.stringify(response.data.data));
-      navigate("/Student");
+      setSelectedFile(null);
+      const userRole = response.data.data.user.role;
+      if (userRole === "student") {
+        navigate("/student");
+      } else if (userRole === "admin") {
+        navigate("/admin");
+      }
     } catch (error) {
-      console.error("Error during submission:", error.response || error.message);
+      console.error(
+        "Error during submission:",
+        error.response || error.message
+      );
       toast.error("Profile Image update failed");
     } finally {
       dispatch(setLoading(false));
@@ -92,7 +101,10 @@ const ChangeProfile = ({ className }) => {
           onChange={onHandleChangeFile}
           ref={fileInputRef}
         />
-                <button type="submit" className=""></button> {/* Submit button (hidden) */}
+        <button type="submit" className="text-transparent">
+          submit
+        </button>{" "}
+        {/* Submit button (hidden) */}
       </form>
     </div>
   );

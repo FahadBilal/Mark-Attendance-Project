@@ -13,7 +13,7 @@ const adminDashboard = asyncHandler(async (req, res) => {
 });
 
 const getAllUsers = asyncHandler(async (_, res) => {
-  const users = await User.find({ role: "student" }).select("-password");
+  const users = await User.find({ role: "student" }).select("-password -refreshToken");
 
   if (!users) {
     throw new ApiError(500, "Error when fetching all users");

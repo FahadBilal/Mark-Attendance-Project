@@ -13,6 +13,7 @@ import ProtectedRoute from './global/AuthLayout.jsx'
 import LeaveRequest from "./UserPage/LeaveRequest.jsx";
 import AttendanceRecord from "./UserPage/AttendanceRecord.jsx";
 import ChangedPassword from "./UserPage/ChangedPassword.jsx";
+import  AdminPassword from './adminPage/AdminPassword.jsx'
 import "./App.css";
 import "./css/satoshi.css";
 
@@ -69,6 +70,14 @@ const MainApp = () => {
           element={
             <ProtectedRoute role="student">
               <ChangedPassword />
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="/admin/changePassword"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminPassword />
             </ProtectedRoute>
           }
         />
