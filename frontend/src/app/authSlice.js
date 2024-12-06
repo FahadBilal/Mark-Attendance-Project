@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { toast } from "react-hot-toast";
 
 const loadUserFromLocalStorage = () => {
   try {
@@ -30,7 +29,6 @@ const authSlice = createSlice({
 
       // Save user and session time to localStorage
       localStorage.setItem("user", JSON.stringify(action.payload));
-      localStorage.setItem("localTime", Date.now());
     },
 
     logout: (state) => {
@@ -39,7 +37,6 @@ const authSlice = createSlice({
 
       // Clear localStorage
       localStorage.removeItem("user");
-      localStorage.removeItem("localTime");
     },
 
     setLoading: (state, action) => {

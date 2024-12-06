@@ -6,13 +6,14 @@ import AllUser from "./AllUser.jsx";
 import AllAttendance from "./AllAtendaces.jsx";
 import Loader from "../global/Loader.jsx";
 import { useSelector } from "react-redux";
+import Button from "../global/Button.jsx";
 
 const AdminPage = () => {
   const loading = useSelector((state) => state.loading);
   const user = JSON.parse(localStorage.getItem("user"));
 
   if (loading) {
-    return <Loader className={`bg-red-500`}/>;
+    return <Loader className={`bg-red-500`} />;
   }
 
   return (
@@ -20,7 +21,7 @@ const AdminPage = () => {
       <div className="max-w-full bg-red-500 min-h-screen relative ">
         <div className="sm:p-6 p-2 bg-white shadow-lg rounded-b-lg h-24 flex justify-between items-center ">
           <h1 className="font-satoshi sm:text-3xl text-2xl text-red-500 font-extrabold">
-            Student Dashboard
+            Admin Dashboard
           </h1>
           <div className=" flex items-center sm:gap-4 gap-2">
             <h4 className="font-satoshi sm:text-2xl text-xl  text-black font-bold">
@@ -48,6 +49,7 @@ const AdminPage = () => {
             </h2>
             <AllUser />
           </div>
+
           {/* Attendance Record */}
           <div>
             <h2 className="text-center text-2xl font-satoshi font-bold sm:mb-6 mb-3 text-white">
@@ -55,6 +57,24 @@ const AdminPage = () => {
             </h2>
             <AllAttendance />
           </div>
+
+          {/* Create Attendance */}
+          <div>
+            <h2 className="text-center text-2xl font-satoshi font-bold sm:mb-6 mb-3 text-white">
+              Create Attendance 
+            </h2>
+            <Link to={"/admin/createAttendance"}>
+            <div className="w-full p-6  bg-white rounded-xl">
+              <Button
+                className={`bg-emerald-500 hover:bg-emerald-600 text-white transition-all duration-300`}
+              >
+                {"Create"}
+              </Button>
+            </div>
+            </Link>
+          </div>
+
+
         </div>
 
         {/* ChangePassword */}

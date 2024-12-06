@@ -6,16 +6,12 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setLoading } from "../app/authSlice.js";
-import Loader from "../global/Loader.jsx";
 
 const AllAttendance = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const loading = useSelector((state) => state.loading);
-
   const user = JSON.parse(localStorage.getItem("user"));
-
 
   const onSubmit = async () => {
     if (!user?.accessToken) {
@@ -33,7 +29,7 @@ const AllAttendance = () => {
           },
         }
       );
-      //console.log(response);
+      console.log(response.data.data);
       toast.success(response.data.message);
       localStorage.setItem(
         "allAttendance",
@@ -46,7 +42,6 @@ const AllAttendance = () => {
       dispatch(setLoading(false));
     }
   };
-
 
   return (
     <div className="w-full p-6  bg-white rounded-xl">

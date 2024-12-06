@@ -28,7 +28,7 @@ const getAllAttendances = asyncHandler(async (_, res) => {
   const attendanceRecord = await Attendance.find().populate(
     "userId",
     "fullName email"
-  );
+  ).sort({ date: -1 });
 
   //console.log(attendanceRecord)
 
@@ -48,6 +48,12 @@ const createAttendanceRecord = asyncHandler(async (req, res) => {
 
   if([userId, date, status].some((field)=>field === "")){
     throw new ApiError(400,"All fields are required");
+  }
+
+  const existingAttendance = await Attendance.findOne({userId,date});
+
+  if(existingAttendance){
+    throw new ApiError(400,"Attendance already Marked")
   }
 
   const attendanceRecord = await Attendance.create({

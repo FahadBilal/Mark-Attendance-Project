@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { PersistGate } from "redux-persist/integration/react";
-import { Provider, useDispatch } from "react-redux";
+import { Provider } from "react-redux";
 import { store, persistor } from "./app/store.js";
 import ToasterMessage from "./global/Toaster.jsx";
 import Home from "./HomePage/index.jsx";
@@ -16,6 +16,7 @@ import ChangedPassword from "./UserPage/ChangedPassword.jsx";
 import AdminPassword from "./adminPage/AdminPassword.jsx";
 import ShowAllUser from "./adminPage/ShowAllUser.jsx";
 import ShowAllAttendance from "./adminPage/ShowAllAttendance.jsx";
+import CreateAttendance from "./adminPage/CreateAttendance.jsx";
 import "./App.css";
 import "./css/satoshi.css";
 
@@ -88,6 +89,14 @@ const MainApp = () => {
           element={
             <ProtectedRoute role="admin">
               <ShowAllAttendance />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/createAttendance"
+          element={
+            <ProtectedRoute role="admin">
+              <CreateAttendance />
             </ProtectedRoute>
           }
         />

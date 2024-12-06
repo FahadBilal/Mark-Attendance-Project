@@ -48,7 +48,7 @@ const ShowAllAttendance = () => {
                     {record.status}
                   </td>
                   <td className="font-poppins sm:text-lg text-sm font-normal px-4 py-2 text-black">
-                    {new Date(record.date).toLocaleDateString()}
+                    {new Date(record.date).toISOString().split("T")[0]}
                   </td>
                   <td className="font-poppins sm:text-lg text-sm font-normal px-4 py-2 text-black">
                     {record.userId.email}
