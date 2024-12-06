@@ -23,6 +23,7 @@ import ChangeProfile from "./UserPage/ChangeProfile.jsx";
 import AdminChangeProfile from "./adminPage/AdminChangeProfile.jsx";
 import ShowAllLeaveRequest from "./adminPage/ShowAllLeaveRequest.jsx";
 import UpdateLeaveRequest from "./adminPage/UpdateLeaveRequest.jsx";
+import ShowAllGrade from "./adminPage/ShowAllGrade.jsx";
 import "./App.css";
 import "./css/satoshi.css";
 
@@ -151,6 +152,14 @@ const MainApp = () => {
           element={
             <ProtectedRoute role="admin">
               <UpdateLeaveRequest />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/showAllGrade"
+          element={
+            <ProtectedRoute role="admin">
+              <ShowAllGrade />
             </ProtectedRoute>
           }
         />

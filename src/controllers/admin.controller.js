@@ -231,7 +231,6 @@ const getAllGrades = asyncHandler(async (req, res) => {
         attendancePercentage: 1,
         grade: 1,
         description: 1,
-        createdAt: 1,
       },
     },
   ]);

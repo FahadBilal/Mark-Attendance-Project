@@ -8,7 +8,8 @@ import Loader from "../global/Loader.jsx";
 import { useSelector } from "react-redux";
 import Button from "../global/Button.jsx";
 import AllLeaveRequest from "./AllLeaveRequest.jsx";
-
+import GenerateGrade from "./generateGrade.jsx";
+import AllGrade from "./AllGrade.jsx";
 const AdminPage = () => {
   const loading = useSelector((state) => state.loading);
   const user = JSON.parse(localStorage.getItem("user"));
@@ -42,7 +43,7 @@ const AdminPage = () => {
         </div>
 
         {/* Grid */}
-        <div className="mt-20 sm:p-6 p-2 grid md:grid-cols-5 sm:grid-cols-2 grid-cols-1 sm:gap-8 gap-10 sm:pb-0 pb-20">
+        <div className="mt-20 sm:p-6 p-2 grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 sm:gap-8 gap-10 sm:pb-0 pb-20">
           {/* Mark Attendance */}
           <div>
             <h2 className="text-center text-2xl font-satoshi font-bold sm:mb-6 mb-3 text-white">
@@ -82,6 +83,23 @@ const AdminPage = () => {
             </h2>
             <AllLeaveRequest />
           </div>
+
+          {/* Generate Grade */}
+          <div>
+            <h2 className="text-center text-2xl font-satoshi font-bold sm:mb-6 mb-3 text-white">
+             Generate Grade
+            </h2>
+            <GenerateGrade />
+          </div>
+
+          {/* All Grade */}
+          <div>
+            <h2 className="text-center text-2xl font-satoshi font-bold sm:mb-6 mb-3 text-white">
+             All Grade
+            </h2>
+            <AllGrade />
+          </div>
+
         </div>
 
         {/* ChangePassword */}

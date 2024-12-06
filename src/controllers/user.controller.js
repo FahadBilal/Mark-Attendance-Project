@@ -356,7 +356,6 @@ const markAttendance = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
   const today = new Date().toISOString().split("T")[0];
-  today.setHours(0,0,0,0);
 
   const isAttendanceMarked = await Attendance.findOne({ userId, date: today });
 
