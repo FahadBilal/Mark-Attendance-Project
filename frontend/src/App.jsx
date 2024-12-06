@@ -19,6 +19,10 @@ import ShowAllAttendance from "./adminPage/ShowAllAttendance.jsx";
 import CreateAttendance from "./adminPage/CreateAttendance.jsx";
 import UpdateAttedance from "./adminPage/UpdateAttedance.jsx";
 import DeleteAttendance from "./adminPage/DeleteAttendance.jsx";
+import ChangeProfile from "./UserPage/ChangeProfile.jsx";
+import AdminChangeProfile from "./adminPage/AdminChangeProfile.jsx";
+import ShowAllLeaveRequest from "./adminPage/ShowAllLeaveRequest.jsx";
+import UpdateLeaveRequest from "./adminPage/UpdateLeaveRequest.jsx";
 import "./App.css";
 import "./css/satoshi.css";
 
@@ -63,6 +67,14 @@ const MainApp = () => {
           }
         />
         <Route
+          path="/student/changeProfile"
+          element={
+            <ProtectedRoute role="student">
+              <ChangeProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/admin"
           element={
             <ProtectedRoute role="admin">
@@ -75,6 +87,14 @@ const MainApp = () => {
           element={
             <ProtectedRoute role="admin">
               <AdminPassword />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/changeProfile"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminChangeProfile />
             </ProtectedRoute>
           }
         />
@@ -115,6 +135,22 @@ const MainApp = () => {
           element={
             <ProtectedRoute role="admin">
               <DeleteAttendance />
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="/admin/showAllLeaveRequest"
+          element={
+            <ProtectedRoute role="admin">
+              <ShowAllLeaveRequest />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/update-leave/:leaveId"
+          element={
+            <ProtectedRoute role="admin">
+              <UpdateLeaveRequest />
             </ProtectedRoute>
           }
         />

@@ -111,7 +111,7 @@ const getAllLeaveRequest = asyncHandler(async (_, res) => {
   const leaveRequest = await LeaveRequest.find().populate(
     "userId",
     "fullName email"
-  );
+  ).sort({ leaveDate: -1 });
 
   if (!leaveRequest) {
     throw new ApiError(500, "Error when fetching all leave request");

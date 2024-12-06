@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setLoading } from "../app/authSlice.js";
 
-const AllAttendance = () => {
+const AllLeaveRequest = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -22,22 +22,22 @@ const AllAttendance = () => {
 
     try {
       const response = await axios.get(
-        `${apiurl}/admin/attendance`,
+        `${apiurl}/admin/allLeaveRequest`,
         {
           headers: {
             Authorization: `Bearer ${user.accessToken}`,
           },
         }
       );
-      //console.log(response.data.data);
+      console.log(response.data.data);
       toast.success(response.data.message);
       localStorage.setItem(
-        "allAttendance",
+        "allLeaveRequest",
         JSON.stringify(response.data.data)
       );
-     navigate("/admin/showAllAttendance");
+     navigate("/admin/showAllLeaveRequest");
     } catch (error) {
-      toast.error("All Attendance Fetched Failed");
+      toast.error("All Leave Request Fetched Failed");
     } finally {
       dispatch(setLoading(false));
     }
@@ -49,10 +49,10 @@ const AllAttendance = () => {
         className={`bg-emerald-500 hover:bg-emerald-600 text-white transition-all duration-300`}
         onClick={onSubmit}
       >
-        {"Attendance Records"}
+        {"Leave Records"}
       </Button>
     </div>
   );
 };
 
-export default AllAttendance;
+export default AllLeaveRequest;

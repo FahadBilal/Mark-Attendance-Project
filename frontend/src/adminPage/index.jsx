@@ -7,6 +7,7 @@ import AllAttendance from "./AllAtendaces.jsx";
 import Loader from "../global/Loader.jsx";
 import { useSelector } from "react-redux";
 import Button from "../global/Button.jsx";
+import AllLeaveRequest from "./AllLeaveRequest.jsx";
 
 const AdminPage = () => {
   const loading = useSelector((state) => state.loading);
@@ -41,7 +42,7 @@ const AdminPage = () => {
         </div>
 
         {/* Grid */}
-        <div className="mt-20 sm:p-6 p-2 grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 sm:gap-8 gap-10 sm:pb-0 pb-20">
+        <div className="mt-20 sm:p-6 p-2 grid md:grid-cols-5 sm:grid-cols-2 grid-cols-1 sm:gap-8 gap-10 sm:pb-0 pb-20">
           {/* Mark Attendance */}
           <div>
             <h2 className="text-center text-2xl font-satoshi font-bold sm:mb-6 mb-3 text-white">
@@ -61,20 +62,26 @@ const AdminPage = () => {
           {/* Create Attendance */}
           <div>
             <h2 className="text-center text-2xl font-satoshi font-bold sm:mb-6 mb-3 text-white">
-              Create Attendance 
+              Create Attendance
             </h2>
             <Link to={"/admin/createAttendance"}>
-            <div className="w-full p-6  bg-white rounded-xl">
-              <Button
-                className={`bg-emerald-500 hover:bg-emerald-600 text-white transition-all duration-300`}
-              >
-                {"Create"}
-              </Button>
-            </div>
+              <div className="w-full p-6  bg-white rounded-xl">
+                <Button
+                  className={`bg-emerald-500 hover:bg-emerald-600 text-white transition-all duration-300`}
+                >
+                  {"Create"}
+                </Button>
+              </div>
             </Link>
           </div>
 
-
+          {/* All Leave Request */}
+          <div>
+            <h2 className="text-center text-2xl font-satoshi font-bold sm:mb-6 mb-3 text-white">
+             Leave Records
+            </h2>
+            <AllLeaveRequest />
+          </div>
         </div>
 
         {/* ChangePassword */}

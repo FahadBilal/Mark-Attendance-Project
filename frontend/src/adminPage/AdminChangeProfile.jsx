@@ -7,7 +7,7 @@ import { setLoading } from "../app/authSlice.js";
 import { FaCamera } from "react-icons/fa";
 import { apiurl } from "../global/Api.jsx";
 
-const ChangeProfile = ({ className }) => {
+const AdminChangeProfile = ({ className }) => {
   const fileInputRef = useRef();
   const [selectedFile, setSelectedFile] = useState(null);
   const dispatch = useDispatch();
@@ -99,4 +99,4 @@ const ChangeProfile = ({ className }) => {
   );
 };
 
-export default ChangeProfile;
+export default AdminChangeProfile;
