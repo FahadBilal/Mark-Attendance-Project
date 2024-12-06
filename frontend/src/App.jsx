@@ -17,6 +17,8 @@ import AdminPassword from "./adminPage/AdminPassword.jsx";
 import ShowAllUser from "./adminPage/ShowAllUser.jsx";
 import ShowAllAttendance from "./adminPage/ShowAllAttendance.jsx";
 import CreateAttendance from "./adminPage/CreateAttendance.jsx";
+import UpdateAttedance from "./adminPage/UpdateAttedance.jsx";
+import DeleteAttendance from "./adminPage/DeleteAttendance.jsx";
 import "./App.css";
 import "./css/satoshi.css";
 
@@ -97,6 +99,22 @@ const MainApp = () => {
           element={
             <ProtectedRoute role="admin">
               <CreateAttendance />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/update-attendance/:attendanceId"
+          element={
+            <ProtectedRoute role="admin">
+              <UpdateAttedance />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/delete-attendance/:attendanceId"
+          element={
+            <ProtectedRoute role="admin">
+              <DeleteAttendance />
             </ProtectedRoute>
           }
         />

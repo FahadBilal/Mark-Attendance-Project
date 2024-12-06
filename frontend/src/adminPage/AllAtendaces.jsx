@@ -29,7 +29,7 @@ const AllAttendance = () => {
           },
         }
       );
-      console.log(response.data.data);
+      //console.log(response.data.data);
       toast.success(response.data.message);
       localStorage.setItem(
         "allAttendance",

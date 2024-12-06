@@ -140,7 +140,7 @@ const CreateAttendance = () => {
           <div>
             <Button
               type="Submit"
-              className={`text-white  mt-8 transition-all duration-500 bg-emerald-500 hover:bg-emerald-600-600`}
+              className={`text-white  mt-8 transition-all duration-500 bg-emerald-500 hover:bg-emerald-600`}
             >
               {"Create Attendance"}
             </Button>
