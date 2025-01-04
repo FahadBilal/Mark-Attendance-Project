@@ -33,12 +33,13 @@ const AdminPage = () => {
           </div>
         </div>
         {/* ProfileImage */}
-        <div className="w-48 h-48 mt-8  rounded-full mx-auto relative">
-          <img
-            src={user.user.profileImage}
-            alt="UserImage"
-            className="object-cover object-center w-full rounded-full "
-          />
+        <div className="w-48 h-48 mt-8 rounded-full mx-auto relative">
+          <div
+            className="w-full h-full bg-cover bg-center rounded-full"
+            style={{
+              backgroundImage: `url(${user.user.profileImage})`,
+            }}
+          ></div>
           <ChangeProfile className="absolute bottom-0 right-0" />
         </div>
 
@@ -79,7 +80,7 @@ const AdminPage = () => {
           {/* All Leave Request */}
           <div>
             <h2 className="text-center text-2xl font-satoshi font-bold sm:mb-6 mb-3 text-white">
-             Leave Records
+              Leave Records
             </h2>
             <AllLeaveRequest />
           </div>
@@ -87,7 +88,7 @@ const AdminPage = () => {
           {/* Generate Grade */}
           <div>
             <h2 className="text-center text-2xl font-satoshi font-bold sm:mb-6 mb-3 text-white">
-             Generate Grade
+              Generate Grade
             </h2>
             <GenerateGrade />
           </div>
@@ -95,11 +96,10 @@ const AdminPage = () => {
           {/* All Grade */}
           <div>
             <h2 className="text-center text-2xl font-satoshi font-bold sm:mb-6 mb-3 text-white">
-             All Grade
+              All Grade
             </h2>
             <AllGrade />
           </div>
-
         </div>
 
         {/* ChangePassword */}
